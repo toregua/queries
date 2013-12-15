@@ -561,7 +561,7 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
     if(predicate == null) {
       while(iterator.moveNext()) {
         result = iterator.current;
-        if(length > 1) {
+        if(length > 0) {
           throw new StateError("The source sequence contains more than one element");
         } else {
           length++;
@@ -572,7 +572,7 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
       while(iterator.moveNext()) {
         var current = iterator.current;
         if(predicate(current)) {
-          if(length > 1) {
+          if(length > 0) {
             throw new StateError("The source sequence contains more than one element");
           } else {
             result = current;
@@ -596,7 +596,7 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
     if(predicate == null) {
       while(iterator.moveNext()) {
         result = iterator.current;
-        if(length > 1) {
+        if(length > 0) {
           throw new StateError("The source sequence contains more than one element");
         } else {
           length++;
@@ -607,7 +607,7 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
       while(iterator.moveNext()) {
         var current = iterator.current;
         if(predicate(current)) {
-          if(length > 1) {
+          if(length > 0) {
             throw new StateError("The source sequence contains more than one element");
           } else {
             result = current;
