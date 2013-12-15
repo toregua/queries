@@ -1,0 +1,7 @@
+name: queries
+author: Andrew Mezoni <andrew.mezoni@gmail.com>
+version: 0.0.1
+description: IQueryable collections.
+dependencies: null
+dev_dependencies:
+  unittest: any
