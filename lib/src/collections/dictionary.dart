@@ -1,6 +1,6 @@
 part of queries.collections;
 
-abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>> {
+abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IQueryable<KeyValuePair<TKey, TValue>> {
   IEqualityComparer<TKey> get comparer;
 
   ICollection<TKey> get keys;
@@ -11,16 +11,20 @@ abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
 
   void operator []=(TKey key, TValue value);
 
+  void add(KeyValuePair<TKey, TValue> element);
+
+  void clear();
+
+  bool containsKey(TKey key);
+
+  bool remove(KeyValuePair<TKey, TValue> element);
+
   bool removeKey(TKey key);
 
   Map<TKey, TValue> toMap();
 }
 
-class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, TValue>> implements IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>> {
-  IEqualityComparer<TKey> _comparer;
-
-  Map<TKey, TValue> _source;
-
+class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Queryable<KeyValuePair<TKey, TValue>> {
   Dictionary([IEqualityComparer<TKey> comparer]) {
     if(comparer == null) {
       comparer = new EqualityComparer<TKey>();
@@ -41,10 +45,8 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
 
     _comparer = comparer;
     _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
-    if(dictionary is Dictionary) {
-      _source.addAll((dictionary as Dictionary)._source);
-    } else {
-      _source.addAll(dictionary.toMap());
+    for(var kvp in dictionary) {
+      _source[kvp.key] = kvp.value;
     }
   }
 
@@ -62,28 +64,152 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
     _source.addAll(map);
   }
 
-  IEqualityComparer<TKey> get comparer {
-    return _comparer;
+  DictionaryKeyCollection<TKey, TValue> get keys {
+    return new DictionaryKeyCollection<TKey, TValue>(this);
+  }
+
+  DictionaryValueCollection<TKey, TValue> get values {
+    return new DictionaryValueCollection<TKey, TValue>(this);
+  }
+}
+
+class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
+  Dictionary<TKey, TValue> _dictionary;
+
+  Iterable<TKey> _items;
+
+  DictionaryKeyCollection(Dictionary<TKey, TValue> dictionary) {
+    if(dictionary == null) {
+      throw new ArgumentError("dictionary: $dictionary");
+    }
+
+    _dictionary = dictionary;
+    _items = dictionary._source.keys;
   }
 
   bool get isReadOnly {
+    return _dictionary.isReadOnly;
+  }
+
+  Iterator<TKey> get iterator {
+    return _items.iterator;
+  }
+
+  int get length {
+    return _items.length;
+  }
+
+  void add(TKey item) {
+    throw new UnsupportedError("add()");
+  }
+
+  void clear() {
+    _dictionary.clear();
+  }
+
+  bool containsValue(TKey value) {
+    var iterator = this.iterator;
+    while(iterator.moveNext()) {
+      if(value == iterator.current) {
+        return true;
+      }
+    }
+
     return false;
+  }
+
+  // TODO: copyTo()
+  void copyTo(List<TKey> list, int index) {
+    throw new UnimplementedError("copyTo()");
+  }
+
+  bool remove(TKey item) {
+    return _dictionary.removeKey(item);
+  }
+
+  String toString() {
+    return _items.toString();
+  }
+}
+
+class DictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
+  Dictionary<TKey, TValue> _dictionary;
+
+  Iterable<TValue> _items;
+
+  DictionaryValueCollection(Dictionary<TKey, TValue> dictionary) {
+    if(dictionary == null) {
+      throw new ArgumentError("dictionary: $dictionary");
+    }
+
+    _dictionary = dictionary;
+    _items = dictionary._source.values;
+  }
+
+  bool get isReadOnly {
+    return _dictionary.isReadOnly;
+  }
+
+  Iterator<TValue> get iterator {
+    return _items.iterator;
+  }
+
+  int get length {
+    return _items.length;
+  }
+
+  void add(TValue item) {
+    throw new UnsupportedError("add()");
+  }
+
+  void clear() {
+    _dictionary.clear();
+  }
+
+  bool containsValue(TValue value) {
+    var iterator = this.iterator;
+    while(iterator.moveNext()) {
+      if(value == iterator.current) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // TODO: copyTo()
+  void copyTo(List<TValue> list, int index) {
+    throw new UnimplementedError("copyTo()");
+  }
+
+  bool remove(TValue item) {
+    throw new UnsupportedError("remove()");
+  }
+
+  String toString() {
+    return _items.toString();
+  }
+}
+
+abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IReadOnlyDictionary<TKey, TValue> {
+  IEqualityComparer<TKey> _comparer;
+
+  Map<TKey, TValue> _source;
+
+  IEqualityComparer<TKey> get comparer {
+    return _comparer;
   }
 
   Iterator<KeyValuePair<TKey, TValue>> get iterator {
     return _getIterator();
   }
 
-  DictionaryKeyCollection<TKey, TValue> get keys {
-    return new DictionaryKeyCollection<TKey, TValue>(this);
+  bool get isReadOnly {
+    return false;
   }
 
   int get length {
     return _source.length;
-  }
-
-  DictionaryValueCollection<TKey, TValue> get values {
-    return new DictionaryValueCollection<TKey, TValue>(this);
   }
 
   TValue operator [](TKey key) {
@@ -91,6 +217,10 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
   }
 
   void operator []=(TKey key, TValue value) {
+    if(isReadOnly) {
+      throw new UnsupportedError("operator []=");
+    }
+
     _source[key] = value;
   }
 
@@ -99,10 +229,18 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
       throw new ArgumentError("element: $element");
     }
 
+    if(isReadOnly) {
+      throw new UnsupportedError("add()");
+    }
+
     _source[element.key] = element.value;
   }
 
   void clear() {
+    if(isReadOnly) {
+      throw new UnsupportedError("clear())");
+    }
+
     _source.clear();
   }
 
@@ -110,27 +248,18 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
     return _source.containsKey(key);
   }
 
-  bool containsValue(TValue value) {
-    return _source.containsValue(value);
+  bool containsValue(KeyValuePair<TKey, TValue> item) {
+    if(item == null) {
+      throw new ArgumentError("item: $item");
+    }
+
+    var key = item.key;
+    return _source.containsKey(key) && _source[key] == item.value;
   }
 
+  // TODO: copyTo()
   void copyTo(List<KeyValuePair<TKey, TValue>> list, int index) {
-    if(list == null) {
-      throw new ArgumentError("list: $list");
-    }
-
-    if(index == null) {
-      throw new ArgumentError("index: $index");
-    }
-
-    if(index < 0) {
-      throw new RangeError("index: $index");
-    }
-
-    var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      list[index++] = iterator.current;
-    }
+    throw new UnimplementedError("copyTo()");
   }
 
   bool remove(KeyValuePair<TKey, TValue> element) {
@@ -138,12 +267,20 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
       throw new ArgumentError("element: $element");
     }
 
+    if(isReadOnly) {
+      throw new UnsupportedError("remove())");
+    }
+
     return removeKey(element.key);
   }
 
   bool removeKey(TKey key) {
-    var exists = _source.containsKey(key);
-    if(exists) {
+    if(isReadOnly) {
+      throw new UnsupportedError("removeKey())");
+    }
+
+    var contains = _source.containsKey(key);
+    if(contains) {
       _source.remove(key);
       return true;
     }
@@ -188,93 +325,5 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
 
   String toString() {
     return _source.toString();
-  }
-}
-
-class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
-  Dictionary<TKey, TValue> _dictionary;
-
-  DictionaryKeyCollection(Dictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
-      throw new ArgumentError("dictionary: $dictionary");
-    }
-
-    _dictionary = dictionary;
-  }
-
-  bool get isReadOnly {
-    return true;
-  }
-
-  Iterator<TKey> get iterator {
-    return _dictionary._source.keys.iterator;
-  }
-
-  int get length {
-    return _dictionary._source.keys.length;
-  }
-
-  void add(TKey item) {
-    throw new UnsupportedError("add()");
-  }
-
-  void clear() {
-    throw new UnsupportedError("clear()");
-  }
-
-  void copyTo(List<TKey> list, int index) {
-    throw new UnsupportedError("copyTo()");
-  }
-
-  bool remove(TKey item) {
-    throw new UnsupportedError("remove()");
-  }
-
-  String toString() {
-    return _dictionary._source.keys.toString();
-  }
-}
-
-class DictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
-  Dictionary<TKey, TValue> _dictionary;
-
-  DictionaryValueCollection(Dictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
-      throw new ArgumentError("dictionary: $dictionary");
-    }
-
-    _dictionary = dictionary;
-  }
-
-  bool get isReadOnly {
-    return true;
-  }
-
-  Iterator<TValue> get iterator {
-    return _dictionary._source.values.iterator;
-  }
-
-  int get length {
-    return _dictionary._source.values.length;
-  }
-
-  void add(TValue item) {
-    throw new UnsupportedError("add()");
-  }
-
-  void clear() {
-    throw new UnsupportedError("clear()");
-  }
-
-  void copyTo(List<TValue> list, int index) {
-    throw new UnsupportedError("copyTo()");
-  }
-
-  bool remove(TValue item) {
-    throw new UnsupportedError("remove()");
-  }
-
-  String toString() {
-    return _dictionary._source.values.toString();
   }
 }

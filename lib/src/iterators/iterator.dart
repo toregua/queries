@@ -1,4 +1,4 @@
-part of queries;
+part of queries.iterators;
 
 class _Iterator<TElement> implements Iterator<TElement> {
   Function action;

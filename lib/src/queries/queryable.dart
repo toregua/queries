@@ -5,14 +5,14 @@ abstract class IQueryable<TSource> implements HasIterator<TSource> {
    * static Queryable<TResult> range<TResult>(int start, int count)
    */
   static IQueryable<dynamic> range(int start, int count) {
-    return new _RangeIterator<dynamic>(start, count);
+    return new RangeIterator<dynamic>(start, count);
   }
 
   /**
    * static Queryable<TResult> repeat<TResult>(TResult element, int count)
    */
   static IQueryable<dynamic> repeat(dynamic element, int count) {
-    return new _RepeatIterator<dynamic>(element, count);
+    return new RepeatIterator<dynamic>(element, count);
   }
 
   Iterator<TSource> get iterator;
@@ -237,11 +237,11 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
 
   IQueryable<dynamic> cast() {
     // return new CastIterator<TResult>(source);
-    return new _CastIterator<dynamic>(this);
+    return new CastIterator<dynamic>(this);
   }
 
   IQueryable<TSource> concat(HasIterator<TSource> other) {
-    return new _ConcatIterator<TSource>(this, other);
+    return new ConcatIterator<TSource>(this, other);
   }
 
   bool contains(TSource value, [IEqualityComparer<TSource> comparer]) {
@@ -278,11 +278,11 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
   }
 
   IQueryable<TSource> defaultIfEmpty([TSource defaultValue]) {
-    return new _DefaultIfEmptyIterator<TSource>(this, defaultValue);
+    return new DefaultIfEmptyIterator<TSource>(this, defaultValue);
   }
 
   IQueryable<TSource> distinct([IEqualityComparer<TSource> comparer]) {
-    return new _DistinctIterator<TSource>(this, comparer);
+    return new DistinctIterator<TSource>(this, comparer);
   }
 
   TSource elementAt(int index) {
@@ -333,7 +333,7 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
   }
 
   IQueryable<TSource> except(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {
-    return new _ExceptIterator<TSource>(this, other, comparer);
+    return new ExceptIterator<TSource>(this, other, comparer);
   }
 
   TSource first([bool predicate(TSource element)]) {
@@ -377,21 +377,21 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
 
   IQueryable<IGrouping<dynamic, dynamic>> groupBy(dynamic keySelector(TSource element), [dynamic elementSelector(TSource source), IEqualityComparer<dynamic> comparer]) {
     // return new _GroupByIterator<TSource, TKey, TElement>>(this, keySelector, elementSelector, comparer);
-    return new _GroupByIterator<TSource, dynamic, dynamic>(this, keySelector, elementSelector, comparer);
+    return new GroupByIterator<TSource, dynamic, dynamic>(this, keySelector, elementSelector, comparer);
   }
 
   IQueryable<dynamic> groupJoin(HasIterator<dynamic> inner, dynamic outerKeySelector(TSource outerElement), dynamic innerKeySelector(dynamic innerElement), dynamic resultSelector(TSource outerElement, IQueryable<dynamic> innerElements), [IEqualityComparer<dynamic> comparer]) {
     // return new _GroupJoinIterator<TSource, TInner, TKey, TResult>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
-    return new _GroupJoinIterator<TSource, dynamic, dynamic, dynamic>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
+    return new GroupJoinIterator<TSource, dynamic, dynamic, dynamic>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
   }
 
   IQueryable<TSource> intersect(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {
-    return new _IntersectIterator<TSource>(this, other, comparer);
+    return new IntersectIterator<TSource>(this, other, comparer);
   }
 
   IQueryable<dynamic> join(HasIterator<dynamic> inner, dynamic outerKeySelector(TSource outer), dynamic innerKeySelector(dynamic inner), dynamic resultSelector(TSource outer, dynamic inner), [IEqualityComparer<dynamic> comparer]) {
     // return new _JoinIterator<TSource, TInner, TKey, TResult>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
-    return new _JoinIterator<TSource, dynamic, dynamic, dynamic>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
+    return new JoinIterator<TSource, dynamic, dynamic, dynamic>(this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
   }
 
   TSource last([bool predicate(TSource element)]) {
@@ -511,27 +511,27 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
 
   IQueryable<dynamic> ofType() {
     // return new _OfTypeIterator<TResult>(source);
-    return new _OfTypeIterator<dynamic>(this);
+    return new OfTypeIterator<dynamic>(this);
   }
 
   IOrderedQueryable<TSource> orderBy(dynamic keySelector(TSource source), [Comparator<dynamic> comparer]) {
     // return new _OrderByIterator<TSource, TKey>(this, keySelector, false, comparer);
-    return new _OrderByIterator<TSource, dynamic>(this, keySelector, false, comparer);
+    return new OrderByIterator<TSource, dynamic>(this, keySelector, false, comparer);
   }
 
   IOrderedQueryable<TSource> orderByDescending(dynamic keySelector(TSource source), [Comparator<dynamic> comparer]) {
     // return new _OrderByIterator<TSource, TKey>(this, keySelector, true, comparer);
-    return new _OrderByIterator<TSource, dynamic>(this, keySelector, true, comparer);
+    return new OrderByIterator<TSource, dynamic>(this, keySelector, true, comparer);
   }
 
   IQueryable<dynamic> select(dynamic selector(TSource element)) {
     // return new _SelectIterator<TSource, TResult>(this, selector);
-    return new _SelectIterator<TSource, dynamic>(this, selector);
+    return new SelectIterator<TSource, dynamic>(this, selector);
   }
 
   IQueryable<dynamic> selectMany(IQueryable<dynamic> selector(TSource source)) {
     // return new _SelectManyIterator<TSource, TResult>(this, selector);
-    return new _SelectManyIterator<TSource, dynamic>(this, selector);
+    return new SelectManyIterator<TSource, dynamic>(this, selector);
   }
 
   bool sequenceEqual(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {
@@ -621,11 +621,11 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
   }
 
   IQueryable<TSource> skip(int count) {
-    return new _SkipIterator<TSource>(this, count);
+    return new SkipIterator<TSource>(this, count);
   }
 
   IQueryable<TSource> skipWhile(bool predicate(TSource element)) {
-    return new _SkipWhileIterator<TSource>(this, predicate);
+    return new SkipWhileIterator<TSource>(this, predicate);
   }
 
   num sum([num selector(TSource element)]) {
@@ -657,11 +657,11 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
   }
 
   IQueryable<TSource> take(int count) {
-    return new _TakeIterator<TSource>(this, count);
+    return new TakeIterator<TSource>(this, count);
   }
 
   IQueryable<TSource> takeWhile(bool predicate(TSource element)) {
-    return new _TakeWhileIterator<TSource>(this, predicate);
+    return new TakeWhileIterator<TSource>(this, predicate);
   }
 
   List<TSource> toList({bool growable : true}) {
@@ -729,10 +729,10 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
   }
 
   IQueryable<TSource> union(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {
-    return new _UnionIterator<TSource>(this, other, comparer);
+    return new UnionIterator<TSource>(this, other, comparer);
   }
 
   IQueryable<TSource> where(bool predicate(TSource element)) {
-    return new _WhereIterator<TSource>(this, predicate);
+    return new WhereIterator<TSource>(this, predicate);
   }
 }

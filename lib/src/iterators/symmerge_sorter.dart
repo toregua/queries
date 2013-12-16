@@ -1,4 +1,4 @@
-part of queries;
+part of queries.iterators;
 
 /*
  * Symmerge sort based on

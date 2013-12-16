@@ -40,6 +40,7 @@ void main() {
   testTake();
   testTakeWhile();
   testThenBy();
+  testToCollection();
   testToDictionary();
   testToLookup();
   testUnion();
@@ -639,6 +640,10 @@ void testThenBy() {
   query = new Collection(source).orderByDescending((s) => s.length).thenByDescending((s) => s);
   list = query.toList();
   expect(list, expected, reason: "thenBy()");
+}
+
+void testToCollection() {
+  //
 }
 
 void testToDictionary() {

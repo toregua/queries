@@ -35,7 +35,7 @@ class Lookup<TKey, TElement> extends Object with Queryable implements ILookup<TK
       return grouping;
     }
 
-    return new _EmptyIterator<TElement>();
+    return new EmptyIterator<TElement>();
   }
 
   /**

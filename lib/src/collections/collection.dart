@@ -1,5 +1,21 @@
 part of queries.collections;
 
+abstract class ICollection<TElement> implements IQueryable<TElement> {
+  bool get isReadOnly;
+
+  int get length;
+
+  void add(TElement item);
+
+  void clear();
+
+  bool containsValue(TElement item);
+
+  void copyTo(List<TElement> list, int index);
+
+  bool remove(TElement item);
+}
+
 class Collection<TElement> extends Object with _Collection<TElement>, Queryable<TElement> {
   Collection([List<TElement> items]) {
     if(items == null) {
@@ -11,13 +27,17 @@ class Collection<TElement> extends Object with _Collection<TElement>, Queryable<
 }
 
 abstract class _Collection<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
-  dynamic _items;
+  List<TElement> _items;
 
   bool get isReadOnly {
     return false;
   }
 
   List<TElement> get items {
+    if(isReadOnly) {
+      throw new UnsupportedError("items");
+    }
+
     return _items;
   }
 
@@ -34,15 +54,19 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
   }
 
   void operator []=(int index, TElement item) {
+    if(isReadOnly) {
+      throw new UnsupportedError("items=");
+    }
+
     _items[index] = item;
   }
 
   void add(TElement element) {
-    _items.add(element);
-  }
+    if(isReadOnly) {
+      throw new UnsupportedError("add()");
+    }
 
-  ReadOnlyCollection<TElement> asReadOnly() {
-    return new ReadOnlyCollection(_items);
+    _items.add(element);
   }
 
   void copyTo(List<TElement> list, int index) {
@@ -67,7 +91,15 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
   }
 
   void clear() {
+    if(isReadOnly) {
+      throw new UnsupportedError("clear()");
+    }
+
     _items.clear();
+  }
+
+  bool containsValue(TElement item) {
+    return _items.contains(item);
   }
 
   int indexOf(TElement item, [int start = 0]) {
@@ -75,86 +107,30 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
   }
 
   void insert(int index, TElement item) {
+    if(isReadOnly) {
+      throw new UnsupportedError("insert()");
+    }
+
     _items.insert(index, item);
   }
 
   bool remove(TElement item) {
+    if(isReadOnly) {
+      throw new UnsupportedError("remove()");
+    }
+
     return _items.remove(item);
   }
 
   TElement removeAt(int index) {
+    if(isReadOnly) {
+      throw new UnsupportedError("removeAt()");
+    }
+
     return _items.removeAt(index);
   }
 
   String toString() {
     return _items.toString();
-  }
-}
-
-abstract class ICollection<TElement> implements IQueryable<TElement> {
-  bool get isReadOnly;
-
-  int get length;
-
-  void add(TElement item);
-
-  void clear();
-
-  void copyTo(List<TElement> list, int index);
-
-  bool remove(TElement item);
-}
-
-abstract class IReadOnlyCollection<TElement> implements IQueryable<TElement> {
-  int get length;
-}
-
-class ReadOnlyCollection<TElement> extends _Collection<TElement> with Queryable<TElement> {
-  ReadOnlyCollection(List<TElement> items) {
-    if(items == null) {
-      throw new ArgumentError("items: $items");
-    }
-
-    _items = items;
-  }
-
-  ReadOnlyCollection.unsafe(dynamic items) {
-    if(items == null) {
-      throw new ArgumentError("items: $items");
-    }
-
-    _items = items;
-  }
-
-  bool get isReadOnly {
-    return true;
-  }
-
-  List<TElement> get items {
-    throw new UnsupportedError("items()");
-  }
-
-  void operator []=(int index, TElement item) {
-    throw new UnsupportedError("operator []=");
-  }
-
-  void add(TElement element) {
-    throw new UnsupportedError("add()");
-  }
-
-  void clear() {
-    throw new UnsupportedError("clear()");
-  }
-
-  void insert(int index, TElement item) {
-    throw new UnsupportedError("insert()");
-  }
-
-  bool remove(TElement item) {
-    throw new UnsupportedError("remove()");
-  }
-
-  TElement removeAt(int index) {
-    throw new UnsupportedError("removeAt()");
   }
 }
