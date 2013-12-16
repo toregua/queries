@@ -185,6 +185,10 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
 
     return iterator;
   }
+
+  String toString() {
+    return _source.toString();
+  }
 }
 
 class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
@@ -225,6 +229,10 @@ class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> 
   bool remove(TKey item) {
     throw new UnsupportedError("remove()");
   }
+
+  String toString() {
+    return _dictionary._source.keys.toString();
+  }
 }
 
 class DictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
@@ -264,5 +272,9 @@ class DictionaryValueCollection<TKey, TValue> extends Object with Queryable<TVal
 
   bool remove(TValue item) {
     throw new UnsupportedError("remove()");
+  }
+
+  String toString() {
+    return _dictionary._source.values.toString();
   }
 }

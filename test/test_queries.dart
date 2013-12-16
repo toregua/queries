@@ -40,6 +40,7 @@ void main() {
   testTake();
   testTakeWhile();
   testThenBy();
+  testToDictionary();
   testToLookup();
   testUnion();
   testWhere();
@@ -638,6 +639,12 @@ void testThenBy() {
   query = new Collection(source).orderByDescending((s) => s.length).thenByDescending((s) => s);
   list = query.toList();
   expect(list, expected, reason: "thenBy()");
+}
+
+void testToDictionary() {
+  var result = new Collection(children).toDictionary((c) => c.parent, (c) => c).toMap();
+  var expected = {a : a1, b : b2, c : c3};
+  expect(result, expected, reason: "groupBy()");
 }
 
 void testToLookup() {

@@ -699,9 +699,10 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
       comparer = new EqualityComparer<dynamic>();
     }
 
-    var dictionary = new Dictionary(comparer);
+    // var dictionary = new Dictionary<TKey, TElement>(comparer);
+    var dictionary = new Dictionary<dynamic, dynamic>(comparer);
     for(var grouping in groupBy(keySelector, elementSelector, comparer)) {
-      dictionary[grouping.key] = grouping;
+      dictionary[grouping.key] = grouping.lastOrDefault();
     }
 
     return dictionary;
@@ -712,8 +713,19 @@ abstract class Queryable<TSource> implements IQueryable<TSource> {
       throw new ArgumentError("keySelector: $keySelector");
     }
 
+    if(comparer == null) {
+      // comparer = new _EqualityComparer<TKey>();
+      comparer = new EqualityComparer<dynamic>();
+    }
+
+    // var dictionary = new Dictionary<dynamic, IGrouping<TKey, TElement>>(comparer);
+    var dictionary = new Dictionary<dynamic, IGrouping<dynamic, dynamic>>(comparer);
+    for(var grouping in groupBy(keySelector, elementSelector, comparer)) {
+      dictionary[grouping.key] = grouping;
+    }
+
     // return new _Lookup<TKey, TElement>(toDictionary<TKey, TElement>(keySelector, elementSelector, comparer));
-    return new Lookup<dynamic, dynamic>._internal(toDictionary(keySelector, elementSelector, comparer));
+    return new Lookup<dynamic, dynamic>._internal(dictionary);
   }
 
   IQueryable<TSource> union(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {

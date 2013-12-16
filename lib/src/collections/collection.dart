@@ -83,6 +83,10 @@ class Collection<TElement> extends Object with Queryable<TElement> implements IC
   TElement removeAt(int index) {
     return _items.removeAt(index);
   }
+
+  String toString() {
+    return _items.toString();
+  }
 }
 
 abstract class ICollection<TElement> implements IQueryable<TElement> {
@@ -221,5 +225,9 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
 
   TElement removeAt(int index) {
     throw new UnsupportedError("removeAt()");
+  }
+
+  String toString() {
+    return _items.toString();
   }
 }
