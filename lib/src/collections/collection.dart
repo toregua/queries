@@ -1,8 +1,6 @@
 part of queries.collections;
 
-class Collection<TElement> extends Object with Queryable<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
-  List<TElement> _items;
-
+class Collection<TElement> extends Object with _Collection<TElement>, Queryable<TElement> {
   Collection([List<TElement> items]) {
     if(items == null) {
       items = <TElement>[];
@@ -10,6 +8,10 @@ class Collection<TElement> extends Object with Queryable<TElement> implements IC
 
     _items = items;
   }
+}
+
+abstract class _Collection<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
+  dynamic _items;
 
   bool get isReadOnly {
     return false;
@@ -53,8 +55,8 @@ class Collection<TElement> extends Object with Queryable<TElement> implements IC
     }
 
     var length = this.length;
-    var rest = index - length;
-    if(index < 0 || rest < 0) {
+    var rest = length - index;
+    if(index < 0 || rest <= 0) {
       throw new RangeError("index: $index");
     }
 
@@ -107,17 +109,7 @@ abstract class IReadOnlyCollection<TElement> implements IQueryable<TElement> {
   int get length;
 }
 
-class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
-  dynamic _items;
-
-  Iterator<TElement> get iterator {
-    return _items.iterator;
-  }
-
-  int get length {
-    return _items.length;
-  }
-
+class ReadOnlyCollection<TElement> extends _Collection<TElement> with Queryable<TElement> {
   ReadOnlyCollection(List<TElement> items) {
     if(items == null) {
       throw new ArgumentError("items: $items");
@@ -138,8 +130,8 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
     return true;
   }
 
-  TElement operator [](int index) {
-    return _items[index];
+  List<TElement> get items {
+    throw new UnsupportedError("items()");
   }
 
   void operator []=(int index, TElement item) {
@@ -154,67 +146,6 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
     throw new UnsupportedError("clear()");
   }
 
-  void copyTo(List<TElement> list, int index) {
-    if(list == null) {
-      throw new ArgumentError("list: $list");
-    }
-
-    if(index == null) {
-      throw new ArgumentError("index: $index");
-    }
-
-    var count = length - index;
-    if(index < 0 || count < 0) {
-      throw new RangeError("index: $index");
-    }
-
-    list.clear();
-    list.length = count;
-    for(var i = 0; i < count; i++) {
-      list[i] = _items[i];
-    }
-  }
-
-  int indexOf(TElement item, [int start = 0]) {
-    if(_items is List<TElement> || _items is IList<TElement>) {
-      return _items.indexOf(item, start);
-    } else if(_items is Iterable<TElement> || _items is HasIterator<TElement>) {
-      if(_items is Iterable<TElement> || _items is HasIterator<TElement>) {
-        if(start < 0) {
-          throw new RangeError("start: $start");
-        }
-
-        var index = -1;
-        var count = start;
-        var iterator = _items.iterator;
-        while(iterator.moveNext()) {
-          index++;
-          if(count == 0) {
-            break;
-          }
-
-          count--;
-        }
-
-        if(count > 0) {
-          throw new RangeError("start: $start");
-        }
-
-        while(item != iterator.current) {
-          if(!iterator.moveNext()) {
-            return -1;
-          }
-
-          index++;
-        }
-
-        return index;
-      }
-    }
-
-    return _items.indexOf(item, start);
-  }
-
   void insert(int index, TElement item) {
     throw new UnsupportedError("insert()");
   }
@@ -225,9 +156,5 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
 
   TElement removeAt(int index) {
     throw new UnsupportedError("removeAt()");
-  }
-
-  String toString() {
-    return _items.toString();
   }
 }

@@ -9,7 +9,8 @@ void main() {
 
 void testCollection() {
   var list = new List(5);
-  var collection = IQueryable.range(0, 5);
+  var collection = IQueryable.range(0, 5).toCollection();
+  collection.copyTo(list, 4);
 }
 
 void testDictionary() {
