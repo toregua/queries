@@ -27,7 +27,7 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
     }
 
     _comparer = comparer;
-    _source = new HashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
+    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
   }
 
   Dictionary.fromDictionary(IDictionary<TKey, TValue> dictionary, [IEqualityComparer<TKey> comparer]) {
@@ -40,7 +40,7 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
     }
 
     _comparer = comparer;
-    _source = new HashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
+    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
     if(dictionary is Dictionary) {
       _source.addAll((dictionary as Dictionary)._source);
     } else {
@@ -58,7 +58,7 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
     }
 
     _comparer = comparer;
-    _source = new HashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
+    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
     _source.addAll(map);
   }
 
@@ -152,7 +152,7 @@ class Dictionary<TKey, TValue> extends Object with Queryable<KeyValuePair<TKey, 
   }
 
   Map<TKey, TValue> toMap() {
-    var map = new HashMap(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+    var map = new LinkedHashMap(equals : _comparer.equals, hashCode : _comparer.getHashCode);
     map.addAll(_source);
     return map;
   }

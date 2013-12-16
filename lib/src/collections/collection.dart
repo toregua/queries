@@ -27,11 +27,11 @@ class Collection<TElement> extends Object with Queryable<TElement> implements IC
     return _items.length;
   }
 
-  TElement operator[](int index) {
+  TElement operator [](int index) {
     return _items[index];
   }
 
-  void operator[]=(int index, TElement item) {
+  void operator []=(int index, TElement item) {
     _items[index] = item;
   }
 
@@ -103,7 +103,7 @@ abstract class IReadOnlyCollection<TElement> implements IQueryable<TElement> {
   int get length;
 }
 
-class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> implements IQueryable<TElement> {
+class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
   dynamic _items;
 
   Iterator<TElement> get iterator {
@@ -128,6 +128,26 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
     }
 
     _items = items;
+  }
+
+  bool get isReadOnly {
+    return true;
+  }
+
+  TElement operator [](int index) {
+    return _items[index];
+  }
+
+  void operator []=(int index, TElement item) {
+    throw new UnsupportedError("operator []=");
+  }
+
+  void add(TElement element) {
+    throw new UnsupportedError("add()");
+  }
+
+  void clear() {
+    throw new UnsupportedError("clear()");
   }
 
   void copyTo(List<TElement> list, int index) {
@@ -189,5 +209,17 @@ class ReadOnlyCollection<TElement> extends Object with Queryable<TElement> imple
     }
 
     return _items.indexOf(item, start);
+  }
+
+  void insert(int index, TElement item) {
+    throw new UnsupportedError("insert()");
+  }
+
+  bool remove(TElement item) {
+    throw new UnsupportedError("remove()");
+  }
+
+  TElement removeAt(int index) {
+    throw new UnsupportedError("removeAt()");
   }
 }
