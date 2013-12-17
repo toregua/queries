@@ -220,7 +220,7 @@ void testElementAt() {
   expect(result, expected, reason: "elementAt()");
   //
   expected = 5;
-  result = IQueryable.range(0, 10).elementAt(5);
+  result = Queryable.range(0, 10).elementAt(5);
   expect(result, expected, reason: "elementAt()");
 }
 
@@ -231,7 +231,7 @@ void testElementAtOrDefault() {
   expect(result, expected, reason: "elementAt()");
   //
   expected = 5;
-  result = IQueryable.range(0, 10).elementAtOrDefault(5);
+  result = Queryable.range(0, 10).elementAtOrDefault(5);
   expect(result, expected, reason: "elementAt()");
   //
   source1 = [];
@@ -460,24 +460,24 @@ void testOrderBy() {
 
 void testRange() {
   var expected = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4];
-  var query = IQueryable.range(-5, 10);
+  var query = Queryable.range(-5, 10);
   var list = query.toList();
   expect(list, expected, reason: "range()");
   //
   expected = <int>[];
-  query = IQueryable.range(100, 0);
+  query = Queryable.range(100, 0);
   list = query.toList();
   expect(list, expected, reason: "range(");
 }
 
 void testRepeat() {
   var expected = [-5, -5, -5, -5, -5, -5, -5, -5, -5, -5];
-  var query = IQueryable.repeat(-5, 10);
+  var query = Queryable.repeat(-5, 10);
   var list = query.toList();
   expect(list, expected, reason: "repeat()");
   //
   expected = <int>[];
-  query = IQueryable.repeat(100, 0);
+  query = Queryable.repeat(100, 0);
   list = query.toList();
   expect(list, expected, reason: "repeat(");
 }

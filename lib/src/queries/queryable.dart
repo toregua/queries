@@ -1,20 +1,6 @@
 part of queries;
 
 abstract class IQueryable<TSource> implements HasIterator<TSource> {
-  /**
-   * static Queryable<TResult> range<TResult>(int start, int count)
-   */
-  static IQueryable<dynamic> range(int start, int count) {
-    return new RangeIterator<dynamic>(start, count);
-  }
-
-  /**
-   * static Queryable<TResult> repeat<TResult>(TResult element, int count)
-   */
-  static IQueryable<dynamic> repeat(dynamic element, int count) {
-    return new RepeatIterator<dynamic>(element, count);
-  }
-
   Iterator<TSource> get iterator;
 
   TSource aggregate(TSource func(TSource result, TSource element), [TSource seed]);
@@ -140,6 +126,20 @@ abstract class IQueryable<TSource> implements HasIterator<TSource> {
 }
 
 abstract class Queryable<TSource> implements IQueryable<TSource> {
+  /**
+   * static Queryable<TResult> range<TResult>(int start, int count)
+   */
+  static IQueryable<dynamic> range(int start, int count) {
+    return new RangeIterator<dynamic>(start, count);
+  }
+
+  /**
+   * static Queryable<TResult> repeat<TResult>(TResult element, int count)
+   */
+  static IQueryable<dynamic> repeat(dynamic element, int count) {
+    return new RepeatIterator<dynamic>(element, count);
+  }
+
   TSource aggregate(TSource func(TSource result, TSource element), [TSource seed]) {
     TSource result = seed;
     var iterator = this.iterator;
