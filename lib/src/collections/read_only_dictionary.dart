@@ -24,26 +24,26 @@ class ReadOnlyDictionary<TKey, TValue> extends _ReadOnlyDictionary<TKey, TValue>
   }
 
   ReadOnlyDictionaryKeyCollection<TKey, TValue> get keys {
-    return new ReadOnlyDictionaryKeyCollection<TKey, TValue>(this);
+    return new ReadOnlyDictionaryKeyCollection<TKey, TValue>._internal(this);
   }
 
   ReadOnlyDictionaryValueCollection<TKey, TValue> get values {
-    return new ReadOnlyDictionaryValueCollection<TKey, TValue>(this);
+    return new ReadOnlyDictionaryValueCollection<TKey, TValue>._internal(this);
   }
 }
 
 class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
-  IDictionary<TKey, TValue> _dictionary;
+  ReadOnlyDictionary<TKey, TValue> _dictionary;
 
   ICollection<TKey> _items;
 
-  ReadOnlyDictionaryKeyCollection(IDictionary<TKey, TValue> dictionary) {
+  ReadOnlyDictionaryKeyCollection._internal(ReadOnlyDictionary<TKey, TValue> dictionary) {
     if(dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
     _dictionary = dictionary;
-    _items = dictionary.keys;
+    _items = dictionary._dictionary.keys;
   }
 
   bool get isReadOnly {
@@ -92,17 +92,17 @@ class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Queryabl
 }
 
 class ReadOnlyDictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
-  IDictionary<TKey, TValue> _dictionary;
+  ReadOnlyDictionary<TKey, TValue> _dictionary;
 
   ICollection<TValue> _items;
 
-  ReadOnlyDictionaryValueCollection(IDictionary<TKey, TValue> dictionary) {
+  ReadOnlyDictionaryValueCollection._internal(ReadOnlyDictionary<TKey, TValue> dictionary) {
     if(dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
     _dictionary = dictionary;
-    _items = dictionary.values;
+    _items = dictionary._dictionary.values;
   }
 
   bool get isReadOnly {
