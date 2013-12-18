@@ -1,6 +1,6 @@
 part of queries;
 
-abstract class IOrderedQueryable<TElement> implements IQueryable<TElement> {
+abstract class IOrderedQueryable<TElement> implements IOrderedEnumerable<TElement>, IQueryable<TElement> {
   /**
    * OrderedQueryable<TElement> createOrderedQueryable<TKey>(TKey keySelector(TElement element), bool descending, [Comparator<TKey> comparer]);
    */

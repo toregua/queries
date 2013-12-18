@@ -1,14 +1,14 @@
 part of queries;
 
-abstract class ILookup<TKey, TElement> implements IQueryable<IGrouping<TKey, TElement>> {
-  IQueryable<TElement> operator [](TKey key);
+abstract class ILookup<TKey, TElement> implements IEnumerable<IGrouping<TKey, TElement>> {
+  IEnumerable<TElement> operator [](TKey key);
 
   bool containsKey(TKey key);
 
   int get length;
 }
 
-class Lookup<TKey, TElement> extends Object with Queryable implements ILookup<TKey, TElement> {
+class Lookup<TKey, TElement> extends Object with Enumerable implements ILookup<TKey, TElement> {
   IGrouping<TKey, TElement> _current;
 
   Dictionary<TKey, IGrouping<TKey, TElement>> _groupings;
@@ -29,19 +29,19 @@ class Lookup<TKey, TElement> extends Object with Queryable implements ILookup<TK
     return _groupings.length;
   }
 
-  IQueryable<TElement> operator [](TKey key) {
+  IEnumerable<TElement> operator [](TKey key) {
     var grouping = _groupings[key];
     if(grouping != null) {
       return grouping;
     }
 
-    return new EmptyIterator<TElement>();
+    return new _EmptyIterator<TElement>();
   }
 
   /**
    * IQueryable<TResult> applyResultSelector<TResult>(TResult resultSelector(TKey key, IQueryable<TElement> elements)) {
    */
-  IQueryable<dynamic> applyResultSelector(dynamic resultSelector(TKey key, IQueryable<TElement> elements)) {
+  IEnumerable<dynamic> applyResultSelector(dynamic resultSelector(TKey key, IEnumerable<TElement> elements)) {
     if(resultSelector == null) {
       throw new ArgumentError("resultSelector: $resultSelector");
     }

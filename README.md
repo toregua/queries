@@ -3,4 +3,4 @@ queries
 
 Queryable collections for Dart language.
 
-Version 0.0.8
+Version 0.0.9

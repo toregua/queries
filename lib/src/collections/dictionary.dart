@@ -1,6 +1,6 @@
 part of queries.collections;
 
-abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IQueryable<KeyValuePair<TKey, TValue>> {
+abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
   IEqualityComparer<TKey> get comparer;
 
   ICollection<TKey> get keys;
@@ -24,7 +24,7 @@ abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   Map<TKey, TValue> toMap();
 }
 
-class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Queryable<KeyValuePair<TKey, TValue>> {
+class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Enumerable<KeyValuePair<TKey, TValue>> {
   Dictionary([IEqualityComparer<TKey> comparer]) {
     if(comparer == null) {
       comparer = new EqualityComparer<TKey>();
@@ -73,7 +73,7 @@ class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Queryable<
   }
 }
 
-class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
+class DictionaryKeyCollection<TKey, TValue> extends Object with Enumerable<TKey> implements ICollection<TKey> {
   Dictionary<TKey, TValue> _dictionary;
 
   Iterable<TKey> _items;
@@ -132,7 +132,7 @@ class DictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> 
   }
 }
 
-class DictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
+class DictionaryValueCollection<TKey, TValue> extends Object with Enumerable<TValue> implements ICollection<TValue> {
   Dictionary<TKey, TValue> _dictionary;
 
   Iterable<TValue> _items;

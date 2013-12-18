@@ -1,9 +1,9 @@
-part of queries.iterators;
+part of queries;
 
-class CastIterator<TResult> extends Object with Queryable<TResult> {
+class _CastIterator<TResult> extends Object with Enumerable<TResult> {
   HasIterator<dynamic> _source;
 
-  CastIterator(HasIterator<dynamic> source) {
+  _CastIterator(HasIterator<dynamic> source) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -44,12 +44,12 @@ class CastIterator<TResult> extends Object with Queryable<TResult> {
   }
 }
 
-class ConcatIterator<TSource> extends Object with Queryable<TSource> {
+class _ConcatIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _first;
 
   HasIterator<TSource> _second;
 
-  ConcatIterator(HasIterator<TSource> first, HasIterator<TSource> second) {
+  _ConcatIterator(HasIterator<TSource> first, HasIterator<TSource> second) {
     if(first == null) {
       throw new ArgumentError("first: $first");
     }
@@ -104,12 +104,12 @@ class ConcatIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class DefaultIfEmptyIterator<TSource> extends Object with Queryable<TSource> {
+class _DefaultIfEmptyIterator<TSource> extends Object with Enumerable<TSource> {
   TSource _defaultValue;
 
   HasIterator<TSource> _source;
 
-  DefaultIfEmptyIterator(HasIterator<TSource> source, [TSource defaultValue]) {
+  _DefaultIfEmptyIterator(HasIterator<TSource> source, [TSource defaultValue]) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -161,12 +161,12 @@ class DefaultIfEmptyIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class DistinctIterator<TSource> extends Object with Queryable<TSource> {
+class _DistinctIterator<TSource> extends Object with Enumerable<TSource> {
   IEqualityComparer<TSource> _comparer;
 
   HasIterator<TSource> _source;
 
-  DistinctIterator(HasIterator<TSource> source, [IEqualityComparer<TSource> comparer]) {
+  _DistinctIterator(HasIterator<TSource> source, [IEqualityComparer<TSource> comparer]) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -219,7 +219,7 @@ class DistinctIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class EmptyIterator<TSource> extends Object with Queryable<TSource> {
+class _EmptyIterator<TSource> extends Object with Enumerable<TSource> {
   Iterator<TSource> get iterator {
     return _getIterator();
   }
@@ -242,14 +242,14 @@ class EmptyIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class ExceptIterator<TSource> extends Object with Queryable<TSource> {
+class _ExceptIterator<TSource> extends Object with Enumerable<TSource> {
   IEqualityComparer<TSource> _comparer;
 
   HasIterator<TSource> _first;
 
   HasIterator<TSource> _second;
 
-  ExceptIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
+  _ExceptIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
     if(first == null) {
       throw new ArgumentError("first: $first");
     }
@@ -315,7 +315,7 @@ class ExceptIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class GroupByIterator<TSource, TKey, TElement> extends Object with Queryable<IGrouping<TKey, TElement>> {
+class _GroupByIterator<TSource, TKey, TElement> extends Object with Enumerable<IGrouping<TKey, TElement>> {
   IEqualityComparer<TKey> _comparer;
 
   Function _elementSelector;
@@ -324,7 +324,7 @@ class GroupByIterator<TSource, TKey, TElement> extends Object with Queryable<IGr
 
   HasIterator<TSource> _source;
 
-  GroupByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), [TElement elementSelector(TSource source), IEqualityComparer<TKey> comparer]) {
+  _GroupByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), [TElement elementSelector(TSource source), IEqualityComparer<TKey> comparer]) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -387,7 +387,7 @@ class GroupByIterator<TSource, TKey, TElement> extends Object with Queryable<IGr
             }
 
             for(var key in map.keys) {
-              result.add(new _Grouping<TKey, TElement>(key, new QueryableIterator<TElement>(map[key])));
+              result.add(new _Grouping<TKey, TElement>(key, new _EnumerableIterator<TElement>(map[key])));
             }
 
             resultIterator = result.iterator;
@@ -403,7 +403,7 @@ class GroupByIterator<TSource, TKey, TElement> extends Object with Queryable<IGr
   }
 }
 
-class GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Queryable<TResult> {
+class _GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerable<TResult> {
   IEqualityComparer<TKey> _comparer;
 
   HasIterator<TInner> _inner;
@@ -416,7 +416,7 @@ class GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Query
 
   Function _resultSelector;
 
-  GroupJoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outer, IQueryable<TInner> inner), [IEqualityComparer<TKey> comparer]) {
+  _GroupJoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outer, IEnumerable<TInner> inner), [IEqualityComparer<TKey> comparer]) {
     if(outer == null) {
       throw new ArgumentError("outer: $outer");
     }
@@ -490,7 +490,7 @@ class GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Query
               TKey key = _outerKeySelector(outerValue);
               var innerValues = innerMap[key];
               if(innerValues != null) {
-                result.add(_resultSelector(outerValue, new QueryableIterator<TInner>(innerValues)));
+                result.add(_resultSelector(outerValue, new _EnumerableIterator<TInner>(innerValues)));
               }
             }
 
@@ -507,14 +507,14 @@ class GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Query
   }
 }
 
-class IntersectIterator<TSource> extends Object with Queryable<TSource> {
+class _IntersectIterator<TSource> extends Object with Enumerable<TSource> {
   IEqualityComparer<TSource> _comparer;
 
   HasIterator<TSource> _first;
 
   HasIterator<TSource> _second;
 
-  IntersectIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
+  _IntersectIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
     if(first == null) {
       throw new ArgumentError("first: $first");
     }
@@ -584,7 +584,7 @@ class IntersectIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Queryable<TResult> {
+class _JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerable<TResult> {
   IEqualityComparer<TKey> _comparer;
 
   HasIterator<TInner> _inner;
@@ -597,7 +597,7 @@ class JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Queryable<
 
   Function _resultSelector;
 
-  JoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outerElement, TInner innerElement), [IEqualityComparer<TKey> comparer]) {
+  _JoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outerElement, TInner innerElement), [IEqualityComparer<TKey> comparer]) {
     if(outer == null) {
       throw new ArgumentError("outer: $outer");
     }
@@ -690,10 +690,10 @@ class JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Queryable<
   }
 }
 
-class OfTypeIterator<TResult> extends Object with Queryable<TResult> {
+class _OfTypeIterator<TResult> extends Object with Enumerable<TResult> {
   HasIterator<dynamic> _source;
 
-  OfTypeIterator(HasIterator<dynamic> source) {
+  _OfTypeIterator(HasIterator<dynamic> source) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -737,7 +737,7 @@ class OfTypeIterator<TResult> extends Object with Queryable<TResult> {
   }
 }
 
-class OrderByIterator<TSource, TKey> extends _OrderedQueryable<TSource> {
+class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
   Comparator<TKey> _comparer;
 
   bool _descending;
@@ -746,7 +746,7 @@ class OrderByIterator<TSource, TKey> extends _OrderedQueryable<TSource> {
 
   HasIterator<TSource> _source;
 
-  OrderByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) {
+  _OrderByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -822,12 +822,12 @@ class OrderByIterator<TSource, TKey> extends _OrderedQueryable<TSource> {
   }
 }
 
-class QueryableIterator<TSource> extends Object with Queryable<TSource> {
+class _EnumerableIterator<TSource> extends Object with Enumerable<TSource> {
   // HasIterator<TSource> _source;
   dynamic _source;
 
-  // QueryableIterator(HasIterator<TSource> source) {
-  QueryableIterator(dynamic source) {
+  // EnumerableIterator(HasIterator<TSource> source) {
+  _EnumerableIterator(dynamic source) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -868,12 +868,12 @@ class QueryableIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class RangeIterator<TSource> extends Object with Queryable<TSource> {
+class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
   int _count;
 
   int _start;
 
-  RangeIterator(int start, int count) {
+  _RangeIterator(int start, int count) {
     if(count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
@@ -929,12 +929,12 @@ class RangeIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class RepeatIterator<TSource> extends Object with Queryable<TSource> {
+class _RepeatIterator<TSource> extends Object with Enumerable<TSource> {
   int _count;
 
   TSource _element;
 
-  RepeatIterator(TSource element, int count) {
+  _RepeatIterator(TSource element, int count) {
     if(count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
@@ -980,12 +980,12 @@ class RepeatIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class SelectIterator<TSource, TResult> extends Object with Queryable<TResult> {
+class _SelectIterator<TSource, TResult> extends Object with Enumerable<TResult> {
   Function _selector;
 
   HasIterator<TSource> _source;
 
-  SelectIterator(HasIterator<TSource> source, TResult selector(TSource element)) {
+  _SelectIterator(HasIterator<TSource> source, TResult selector(TSource element)) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1031,12 +1031,12 @@ class SelectIterator<TSource, TResult> extends Object with Queryable<TResult> {
   }
 }
 
-class SelectManyIterator<TSource, TResult> extends Object with Queryable<TResult> {
+class _SelectManyIterator<TSource, TResult> extends Object with Enumerable<TResult> {
   Function _selector;
 
   HasIterator<TSource> _source;
 
-  SelectManyIterator(HasIterator<TSource> source, IQueryable<TResult> selector(TSource element)) {
+  _SelectManyIterator(HasIterator<TSource> source, IEnumerable<TResult> selector(TSource element)) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1071,7 +1071,7 @@ class SelectManyIterator<TSource, TResult> extends Object with Queryable<TResult
             break;
           case 1:
             if(sourceIterator.moveNext()) {
-              IQueryable<TResult> element = _selector(sourceIterator.current);
+              IEnumerable<TResult> element = _selector(sourceIterator.current);
               elementIterator = element.iterator;
               iterator.state = 2;
               break;
@@ -1094,12 +1094,12 @@ class SelectManyIterator<TSource, TResult> extends Object with Queryable<TResult
   }
 }
 
-class SkipIterator<TSource> extends Object with Queryable<TSource> {
+class _SkipIterator<TSource> extends Object with Enumerable<TSource> {
   int _count;
 
   HasIterator<TSource> _source;
 
-  SkipIterator(HasIterator<TSource> source, int count) {
+  _SkipIterator(HasIterator<TSource> source, int count) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1157,12 +1157,12 @@ class SkipIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class SkipWhileIterator<TSource> extends Object with Queryable<TSource> {
+class _SkipWhileIterator<TSource> extends Object with Enumerable<TSource> {
   Function _predicate;
 
   HasIterator<TSource> _source;
 
-  SkipWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
+  _SkipWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1219,12 +1219,12 @@ class SkipWhileIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class TakeIterator<TSource> extends Object with Queryable<TSource> {
+class _TakeIterator<TSource> extends Object with Enumerable<TSource> {
   int _count;
 
   HasIterator<TSource> _source;
 
-  TakeIterator(HasIterator<TSource> source, int count) {
+  _TakeIterator(HasIterator<TSource> source, int count) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1276,12 +1276,12 @@ class TakeIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class TakeWhileIterator<TSource> extends Object with Queryable<TSource> {
+class _TakeWhileIterator<TSource> extends Object with Enumerable<TSource> {
   Function _predicate;
 
   HasIterator<TSource> _source;
 
-  TakeWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
+  _TakeWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }
@@ -1330,10 +1330,10 @@ class TakeWhileIterator<TSource> extends Object with Queryable<TSource> {
   }
 }
 
-class ThenByIterator<TSource, TKey> extends OrderByIterator<TSource, TKey> {
-  OrderByIterator<TSource, dynamic> _source;
+class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
+  _OrderByIterator<TSource, dynamic> _source;
 
-  ThenByIterator(OrderByIterator<TSource, dynamic> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) : super(source, keySelector, descending, comparer);
+  _ThenByIterator(_OrderByIterator<TSource, dynamic> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) : super(source, keySelector, descending, comparer);
 
   Iterator<TSource> get iterator {
     return _getIterator();
@@ -1437,14 +1437,14 @@ class ThenByIterator<TSource, TKey> extends OrderByIterator<TSource, TKey> {
   }
 }
 
-class UnionIterator<TSource> extends Object with Queryable<TSource> {
+class _UnionIterator<TSource> extends Object with Enumerable<TSource> {
   IEqualityComparer<TSource> _comparer;
 
   HasIterator<TSource> _first;
 
   HasIterator<TSource> _second;
 
-  UnionIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
+  _UnionIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
     if(first == null) {
       throw new ArgumentError("first: $first");
     }
@@ -1517,12 +1517,12 @@ class UnionIterator<TSource> extends Object with Queryable<TSource> {
 
 }
 
-class WhereIterator<TSource> extends Object with Queryable<TSource> {
+class _WhereIterator<TSource> extends Object with Enumerable<TSource> {
   Function _predicate;
 
   HasIterator<TSource> _source;
 
-  WhereIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
+  _WhereIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
     if(source == null) {
       throw new ArgumentError("source: $source");
     }

@@ -1,6 +1,6 @@
 part of queries.collections;
 
-abstract class ICollection<TElement> implements IQueryable<TElement> {
+abstract class ICollection<TElement> implements IEnumerable<TElement> {
   bool get isReadOnly;
 
   int get length;
@@ -16,7 +16,7 @@ abstract class ICollection<TElement> implements IQueryable<TElement> {
   bool remove(TElement item);
 }
 
-class Collection<TElement> extends Object with _Collection<TElement>, Queryable<TElement> {
+class Collection<TElement> extends Object with _Collection<TElement>, Enumerable<TElement> {
   Collection([List<TElement> items]) {
     if(items == null) {
       items = <TElement>[];

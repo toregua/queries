@@ -1,20 +1,20 @@
 part of queries.collections;
 
-abstract class IReadOnlyDictionary<TKey, TValue>  implements IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IQueryable<KeyValuePair<TKey, TValue>> {
+abstract class IReadOnlyDictionary<TKey, TValue>  implements IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
   IEqualityComparer<TKey> get comparer;
 
   TValue operator [](TKey key);
 
-  IQueryable<TKey> get keys;
+  IEnumerable<TKey> get keys;
 
-  IQueryable<TValue> get values;
+  IEnumerable<TValue> get values;
 
   bool containsKey(TKey key);
 
   Map<TKey, TValue> toMap();
 }
 
-class ReadOnlyDictionary<TKey, TValue> extends _ReadOnlyDictionary<TKey, TValue> with Queryable<KeyValuePair<TKey, TValue>> {
+class ReadOnlyDictionary<TKey, TValue> extends _ReadOnlyDictionary<TKey, TValue> with Enumerable<KeyValuePair<TKey, TValue>> {
   ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary) {
     if(dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
@@ -32,7 +32,7 @@ class ReadOnlyDictionary<TKey, TValue> extends _ReadOnlyDictionary<TKey, TValue>
   }
 }
 
-class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Queryable<TKey> implements ICollection<TKey> {
+class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Enumerable<TKey> implements ICollection<TKey> {
   ReadOnlyDictionary<TKey, TValue> _dictionary;
 
   ICollection<TKey> _items;
@@ -91,7 +91,7 @@ class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Queryabl
   }
 }
 
-class ReadOnlyDictionaryValueCollection<TKey, TValue> extends Object with Queryable<TValue> implements ICollection<TValue> {
+class ReadOnlyDictionaryValueCollection<TKey, TValue> extends Object with Enumerable<TValue> implements ICollection<TValue> {
   ReadOnlyDictionary<TKey, TValue> _dictionary;
 
   ICollection<TValue> _items;
