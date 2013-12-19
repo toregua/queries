@@ -7,20 +7,94 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
 
   IQueryProvider get provider;
 
-  TSource aggregate(TSource func(TSource result, TSource element), [TSource seed]);
+  /**
+   * Accumulates the result produced by the provided function over all elements
+   * in sequence.
+   *
+   * Parameters:
+   *  [TSource] func([TSource] result, [TSource] element)
+   *    Function that produces the cumulative result.
+   *  [TSource] seed
+   *    Initial result of accumulator.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *    [func] is [:null:]
+   *
+   *  [StateError]
+   *    The source sequence is empty.
+   */
+  TSource aggregate(TSource func(TSource accumulator, TSource element), [TSource seed]);
 
+  /**
+   * Returns [:true:] if all elements matches the specified criteria, or if the
+   * sequence is empty; otherwise, [:false:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element):
+   *    Function that defines criteria and determines whether the specified
+   *    element meets this criteria.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *    [predicate] is [:null:]
+   */
   bool all(bool predicate(TSource element));
 
+  /**
+   * Returns [:true:] if any element matches the specified criteria,
+   * otherwise returns [:false:].
+   * If the criteria is not specified, returns [:true:] if the sequence contains
+   * at least one element; otherwise, [:false:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element)
+   *    Function that defines criteria and determines whether the specified
+   *    element meets this criteria.
+   */
   bool any([bool predicate(TSource element)]);
 
+  /**
+   * Returns [Iterable] sequence converted from the current sequence.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   Iterable<TSource> asIterable();
 
+  /**
+   * Returns [IQueryable] sequence converted from the current sequence.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   IQueryable<TSource> asQueryable();
 
+  /**
+   * Returns the sum of values of each element divided by the size of the
+   * sequence.
+   *
+   * Parameters:
+   *  num selector(TSource element)
+   *   Function to support transform elements.
+   *
+   * Exceptions:
+   *  [StateError]
+   *    The sequence is empty.
+   */
   num average([num selector(TSource element)]);
 
   /**
-   * Queryable<TResult> cast<TResult>()
+   * Cast all elements in sequence to the specified type.
+   * **Unsupported before the advent of generics methods.**
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   *   [TypeError]
+   *     Cannot cast to the specified type at least one of the elements.
    */
   IQueryable<dynamic> cast();
 
@@ -130,12 +204,4 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
 }
 
 abstract class Queryable<TSource> implements IQueryable<TSource> {
-  IQueryable<TSource> where(bool predicate(dynamic element)) {
-    return provider.createQuery(
-        Expression.methodCall(
-          Expression.constant(this),
-          objectInfo(this).type.getMethod(#where),
-          [predicate == null ? Expression.constant(null) : LambdaExpression.build(predicate)])
-    );
-  }
 }

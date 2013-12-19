@@ -15,7 +15,28 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     return new _RepeatIterator<dynamic>(element, count);
   }
 
-  TSource aggregate(TSource func(TSource result, TSource element), [TSource seed]) {
+  /**
+   * Accumulates the result produced by the provided function over all elements
+   * in sequence.
+   *
+   * Parameters:
+   *  [TSource] func([TSource] result, [TSource] element)
+   *    Function that produces the cumulative result.
+   *  [TSource] seed
+   *    Initial result of accumulator.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *    [func] is [:null:]
+   *
+   *  [StateError]
+   *    The source sequence is empty.
+   */
+  TSource aggregate(TSource func(TSource accumulator, TSource element), [TSource seed]) {
+    if(func == null) {
+      throw new ArgumentError("func: $func");
+    }
+
     TSource result = seed;
     var iterator = this.iterator;
     if(!iterator.moveNext()) {
@@ -37,6 +58,19 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     return result;
   }
 
+  /**
+   * Returns [:true:] if all elements matches the specified criteria, or if the
+   * sequence is empty; otherwise, [:false:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element):
+   *    Function that defines criteria and determines whether the specified
+   *    element meets this criteria.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *    [predicate] is [:null:]
+   */
   bool all(bool predicate(TSource element)) {
     if(predicate == null) {
       throw new ArgumentError("predicate: $predicate");
@@ -52,6 +86,17 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     return true;
   }
 
+  /**
+   * Returns [:true:] if any element matches the specified criteria,
+   * otherwise returns [:false:].
+   * If the criteria is not specified, returns [:true:] if the sequence contains
+   * at least one element; otherwise, [:false:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element)
+   *    Function that defines criteria and determines whether the specified
+   *    element meets this criteria.
+   */
   bool any([bool predicate(TSource element)]) {
     var iterator = this.iterator;
     if(predicate == null) {
@@ -71,14 +116,40 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     return false;
   }
 
+  /**
+   * Returns [Iterable] sequence converted from the current sequence.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   Iterable<TSource> asIterable() {
     return new _Iterable<TSource>(iterator);
   }
 
+  /**
+   * Returns [IQueryable] sequence converted from the current sequence.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   IQueryable<TSource> asQueryable() {
     throw new UnimplementedError("asQueryable()");
   }
 
+  /**
+   * Returns the sum of values of each element divided by the size of the
+   * sequence.
+   *
+   * Parameters:
+   *  num selector(TSource element)
+   *   Function to support transform elements.
+   *
+   * Exceptions:
+   *  [StateError]
+   *    The sequence is empty.
+   */
   num average([num selector(TSource element)]) {
     var count = 1;
     num sum;
@@ -110,8 +181,17 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     return sum / count;
   }
 
+  /**
+   * Cast all elements in sequence to the specified type.
+   * **Unsupported before the advent of generics methods.**
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   *   [TypeError]
+   *     Cannot cast to the specified type at least one of the elements.
+   */
   IEnumerable<dynamic> cast() {
-    // return new CastIterator<TResult>(source);
     return new _CastIterator<dynamic>(this);
   }
 
