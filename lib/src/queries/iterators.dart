@@ -882,7 +882,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
       throw new ArgumentError("start: $start");
     }
 
-    if(start + count - 1 > 2147483647) {
+    if(start + count - 1 > 0x7fffffff) {
       throw new RangeError.value(start + count - 1);
     }
 

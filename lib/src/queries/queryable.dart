@@ -8,8 +8,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryProvider get provider;
 
   /**
-   * Returns the accumulated result from all elements by provided accumulator
-   * function.
+   * Returns the accumulated result from all elements by the provided
+   * accumulator function.
    *
    * Parameters:
    *  [TSource] func([TSource] result, [TSource] element)
@@ -44,7 +44,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   bool all(bool predicate(TSource element));
 
   /**
-   * With specified criteria returns [:true:] if any element matches the
+   * With specified criteria, returns [:true:] if any element matches the
    * specified criteria, otherwise returns [:false:].
    *  OR
    * Without criteria, returns [:true:] if the sequence contains at least one
@@ -60,7 +60,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   bool any([bool predicate(TSource element)]);
 
   /**
-   * Returns the [Iterable] sequence obtained from the current sequence.
+   * Returns the [Iterable]<[TSource]> sequence obtained from the current
+   * sequence.
    *
    * Parameters:
    *
@@ -69,7 +70,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   Iterable<TSource> asIterable();
 
   /**
-   * Returns the [IQueryable] sequence obtained from the current sequence.
+   * Returns the [IQueryable]<[TSource]> sequence obtained from the current
+   * sequence.
    *
    * Parameters:
    *
@@ -92,22 +94,23 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   num average([num selector(TSource element)]);
 
   /**
-   * Cast all elements in sequence into sequence of the specified type.
+   * Performs type conversion of elements in the specified type and returns
+   * the sequence of the specified type.
    *
    * Attention:
-   *   Unsupported before the support of generics methods.
+   *  Unsupported before the support of generics methods.
    *
    * Parameters:
    *
    * Exceptions:
    *  [TypeError]
-   *  Cannot cast to the specified type at least one of the elements.
+   *  Error during the type conversion.
    */
   IQueryable<dynamic> cast();
 
   /**
    * Returns the result of concatenation of elements of the current and the
-   * given sequence.
+   * other sequence.
    *
    * Parameters:
    *  [HasIterator]<[TSource]> other
@@ -120,8 +123,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryable<TSource> concat(HasIterator<TSource> other);
 
   /**
-   * Returns [:true:] if sequence contains the given value;
-   * otherwise, [:false:].
+   * Returns [:true:] if sequence contains the given value; otherwise, [:false:].
    *
    * Parameters:
    *
@@ -130,10 +132,10 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   bool contains(TSource value, [IEqualityComparer<TSource> comparer]);
 
   /**
-   * With specified criteria returns the number of elements that matches a
+   * With specified criteria, returns the number of elements that matches a
    * specified criteria.
    *  OR
-   * Without criteria returns the number of elements in seqeunce.
+   * Without criteria, returns the number of elements in seqeunce.
    *
    * Parameters:
    *  [bool] predicate([TSource] element)
@@ -156,7 +158,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryable<TSource> defaultIfEmpty([TSource defaultValue]);
 
   /**
-   * Returns the current sequence without the duplicate elements.
+   * Returns the sequence consisting of the elements of the current sequence
+   * without the duplicate elements.
    *
    * Parameters:
    *  [IEqualityComparer]<[TSource]> comparer
@@ -200,7 +203,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
 
   /**
    * Returns the sequence consisting of the elements of the current sequence
-   * except for the elements of the given sequence.
+   * except for the elements of the other sequence.
    *
    * Parameters:
    *  [HasIterator]<[TSource]> other
@@ -213,10 +216,10 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryable<TSource> except(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]);
 
   /**
-   * With specified criteria returns the first element of the sequence that
+   * With specified criteria, returns the first element of the sequence that
    * matches the specified criteria.
    *  OR
-   * Without criteria, returns the first element of the sequence.
+   * Without criteria returns the first element.
    *
    * Parameters:
    *  [bool] predicate([TSource] element
@@ -225,12 +228,14 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    *
    * Exceptions:
    *  [StateError]
-   *  The sequence is empty or no one element matches specified criteria.
+   *  The sequence is empty.
+   *    OR
+   *  No one element matches specified criteria.
    */
   TSource first([bool predicate(TSource element)]);
 
   /**
-   * With specified criteria returns the first element of the sequence that
+   * With specified criteria, returns the first element of the sequence that
    * matches the specified criteria; otherwise, default value.
    *  OR
    * Without criteria, returns the first element of the sequence; otherwise,
@@ -249,8 +254,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   TSource firstOrDefault([bool predicate(TSource element)]);
 
   /**
-   * Returns an immutable collection of groups of elements with their keys,
-   * where each key mapped on a collection of elements.
+   * Combines the elements into groups of elements according to key and returns
+   * the immutable collection of groups with their key and elements.
    *
    * Parameters:
    *  [TKey] keySelector([TSource] source)
@@ -268,13 +273,9 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    */
   IQueryable<IGrouping<dynamic, dynamic>> groupBy(dynamic keySelector(TSource element), [dynamic elementSelector(TSource source), IEqualityComparer<dynamic> comparer]);
 
-  IQueryable<dynamic> groupJoin(HasIterator<dynamic> inner, dynamic outerKeySelector(TSource element), dynamic innerKeySelector(dynamic element), dynamic resultSelector(TSource outerElement, IEnumerable<dynamic> innerElements), [IEqualityComparer<dynamic> comparer]);
-
-  IQueryable<TSource> intersect(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]);
-
   /**
-   * Returns the combination of elements of the current (outer) sequence with
-   * the given (inner) sequence based on matching keys.
+   * Combines the elements of the current sequence and the inner sequence
+   * according to key and returns the result sequence.
    *
    * Parameters:
    *  [HasIterator]<[TInner]> inner
@@ -293,7 +294,60 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    *  [IEqualityComparer]<[TSource]> comparer
    *  Function to support the comparison of elements for equality.
    *
+   * Exceptions:
+   *  [ArgumentError]
+   *  [inner] is [:null:]
+   *
+   *  [ArgumentError]
+   *  [outerKeySelector] is [:null:]
+   *
+   *  [ArgumentError]
+   *  [innerKeySelector] is [:null:]
+   *
+   *  [ArgumentError]
+   *  [resultSelector] is [:null:]
+   */
+  IQueryable<dynamic> groupJoin(HasIterator<dynamic> inner, dynamic outerKeySelector(TSource element), dynamic innerKeySelector(dynamic element), dynamic resultSelector(TSource outerElement, IEnumerable<dynamic> innerElements), [IEqualityComparer<dynamic> comparer]);
+
+  /**
+   * Returns distinct values from the current sequence that are not also found
+   * in the other sequence.
+   *
+   * Parameters:
+   *  [HasIterator]<[TSource]> other
+   *  Sequence for concatenation with the current sequence.
+   *
+   *  [IEqualityComparer]<[TSource]> comparer
+   *  Function to support the comparison of elements for equality.
+   *
    *  Exceptions:
+   *  [ArgumentError]
+   *  [other] is [:null:]
+   */
+  IQueryable<TSource> intersect(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]);
+
+  /**
+   * Returns the combination of elements of the current (outer) sequence with
+   * the inner sequence based on matching keys.
+   *
+   * Parameters:
+   *  [HasIterator]<[TInner]> inner
+   *  Inner sequence of elements.
+   *
+   *  [TKey] outerKeySelector([TSource] outerElement)
+   *  Function that obtains a key of the element of the outer sequence.
+   *
+   *  [TKey] innerKeySelector([TInner] innerElement)
+   *  Function that obtains a key of the element of the inner sequence.
+   *
+   *  [TResult] resultSelector([TSource] outerElement, [TInner] innerElement)
+   *  Function to support the transform combination of outer and inner elements
+   *  to the certain result.
+   *
+   *  [IEqualityComparer]<[TSource]> comparer
+   *  Function to support the comparison of elements for equality.
+   *
+   * Exceptions:
    *  [ArgumentError]
    *  [inner] is [:null:]
    *
@@ -308,36 +362,230 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    */
   IQueryable<dynamic> join(HasIterator<dynamic> inner, dynamic outerKeySelector(TSource outerElement), dynamic innerKeySelector(dynamic innerElement), dynamic resultSelector(TSource outerElement, dynamic innerElement), [IEqualityComparer<dynamic> comparer]);
 
+  /**
+   * With specified criteria, returns the last element of the sequence that
+   * matches the specified criteria.
+   *  OR
+   * Without criteria returns the last element.
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element
+   *  Function that defines criteria and determines whether the specified
+   *  element meets this criteria.
+   *
+   * Exceptions:
+   *  [StateError]
+   *  The sequence is empty.
+   *    OR
+   *  No one element matches specified criteria.
+   */
   TSource last([bool predicate(TSource element)]);
 
+  /**
+   * With specified criteria, returns the last element of the sequence that
+   * matches the specified criteria; otherwise, default value.
+   *  OR
+   * Without criteria, returns the last element of the sequence; otherwise,
+   * default value.
+   *
+   * Note:
+   *  Default value for nullable types is [:null:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element
+   *  Function that defines criteria and determines whether the specified
+   *  element meets this criteria.
+   *
+   * Exceptions:
+   */
   TSource lastOrDefault([bool predicate(TSource element)]);
 
+  /**
+   * Returns the maximum value of element in the sequence.
+   *
+   * Parameters:
+   *  [num] selector([TSource] element)
+   *  Function to support transform elements.
+   *
+   * Exceptions:
+   *  [StateError]
+   *  The sequence is empty.
+   */
   num max([num selector(TSource element)]);
 
+  /**
+   * Returns the sequence of specified type that consists only from elements of
+   * specified type.
+   *
+   * Attention:
+   *  Unsupported before the support of generics methods.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   num min([num selector(TSource element)]);
 
+  /**
+   * Returns the sequence of specified type that consists only from elements of
+   * specified type.
+   *
+   * Attention:
+   *  Unsupported before the support of generics methods.
+   *
+   * Parameters:
+   *
+   * Exceptions:
+   */
   IQueryable<dynamic> ofType();
 
+  /**
+   * Returns the sequence sorted in ascending order according to a key.
+   *
+   * Parameters:
+   *  [TKey] keySelector([TSource] source)
+   *  Function that obtains a key of the source element.
+   *
+   *  [Comparator]<[TSource]> comparer
+   *  Function to support the comparison of elements for ordering.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *  [keySelector] is [:null:]
+   */
   IOrderedQueryable<TSource> orderBy(dynamic keySelector(TSource element), [Comparator<dynamic> comparer]);
 
+  /**
+   * Returns the sequence sorted in descending order according to a key.
+   *
+   * Parameters:
+   *  [TKey] keySelector([TSource] source)
+   *  Function that obtains a key of the source element.
+   *
+   *  [Comparator]<[TSource]> comparer
+   *  Function to support the comparison of elements for ordering.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *  [keySelector] is [:null:]
+   */
   IOrderedQueryable<TSource> orderByDescending(dynamic keySelector(TSource element), [Comparator<dynamic> comparer]);
 
+  /**
+   * Applies the transform function to each element and returns the sequence of
+   * those transformed elements.
+   *
+   * Parameters:
+   *  [TResult] selector([TSource] element)
+   *  Function to support transform elements.
+   *
+   * Exceptions:
+   *  [StateError]
+   *  [selector] is [:null:].
+   *
+   */
   IQueryable<dynamic> select(dynamic selector(TSource element));
 
+  /**
+   * Combines the results of transformation, that applied to each element, into
+   * the flat sequence of result elements and returns this sequence.
+   *
+   * Parameters:
+   *  [TResult] selector([TSource] element)
+   *  Function to support transform elements.
+   *
+   * Exceptions:
+   *  [StateError]
+   *  [selector] is [:null:].
+   *
+   */
   IQueryable<dynamic> selectMany(IQueryable<dynamic> selector(TSource element));
 
+  /**
+   * Compares the elements of the current sequence and the other sequence, and
+   * returns [:true:] if all elements equal; otherwise, [:false:].
+   *
+   * Parameters:
+   *  [HasIterator]<[TSource]> other
+   *  Sequence for concatenation with the current sequence.
+   *
+   *  [IEqualityComparer]<[TSource]> comparer
+   *  Function to support the comparison of elements for equality.
+   *
+   *  Exceptions:
+   *  [ArgumentError]
+   *  [other] is [:null:]
+   */
   bool sequenceEqual(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]);
 
+  /**
+   * With specified criteria, returns the single element that matches the
+   * specified criteria.
+   *  OR
+   * Without criteria, returns single element.
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element
+   *  Function that defines criteria and determines whether the specified
+   *  element meets this criteria.
+   *
+   * Exceptions:
+   *  [StateError]
+   *  The sequence is empty.
+   *   OR
+   *  With criteria, more than one element matches the specified criteria.
+   *   OR
+   *  Without criteria, the source sequence contains more than one element.
+   */
   TSource single([bool predicate(TSource element)]);
 
+  /**
+   * With specified criteria, returns the single element that matches the
+   * specified criteria; otherwise, default value.
+   *  OR
+   * Without criteria, returns single element; otherwise, default value.
+   *
+   * Note:
+   *  Default value for nullable types is [:null:].
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element)
+   *  Function that defines criteria and determines whether the specified
+   *  element meets this criteria.
+   *
+   * Exceptions:
+   */
   TSource singleOrDefault([bool predicate(TSource element)]);
 
+  /**
+   * Skips the specified number of elements and returns the rest of the
+   * sequence.
+   *
+   * Parameters:
+   *  [int] count
+   *  The number of elements to skip.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *  [count] is [:null:]
+   */
   IQueryable<TSource> skip(int count);
 
+  /**
+   * Skips the elements while the elements matches the specified criteria and
+   * returns the rest of the sequence.
+   *
+   * Parameters:
+   *  [bool] predicate([TSource] element)
+   *  Function that defines criteria and determines whether the specified
+   *  element meets this criteria.
+   *
+   * Exceptions:
+   */
   IQueryable<TSource> skipWhile(bool predicate(TSource element));
 
   /**
-   * Returns the sum of values of each element.
+   * Returns the sum of values of each element in sequence.
    *
    * Parameters:
    *  [num] selector([TSource] element)
@@ -350,11 +598,12 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   num sum([num selector(TSource element)]);
 
   /**
-   * Returns the sequence of elements until count not reaches zero value.
+   * Takes the specified maximal number of elements and returns the sequence that
+   * consist of these elements.
    *
    * Parameters:
    *  [int] count
-   *  Limit of the number of returned elements.
+   *  Maximal number of returned elements.
    *
    * Exceptions:
    *  [ArgumentError]
@@ -363,8 +612,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryable<TSource> take(int count);
 
   /**
-   * Returns the sequence of elements until the elements matches the specified
-   * criteria.
+   * Takes the elements while elements matches the specified criteria and
+   * returns the sequence that consist of these elements.
    *
    * Parameters:
    *  [bool] predicate([TSource] element)
@@ -415,8 +664,8 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   List<dynamic> toList();
 
   /**
-   * Returns the immutable collection of groups where each group key mapped to
-   * the group of the elements.
+   * Returns the immutable collection of groups where each key of the group
+   * mapped to the group of the elements.
    *
    * Parameters:
    *  [TKey] keySelector([TSource] source)
@@ -436,7 +685,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
 
   /**
    * Returns the sequence that consists of the distinct elements from the current
-   * and the provided sequence.
+   * and the other sequence.
    *
    * Parameters:
    *  [HasIterator]<[TSource]> other
@@ -452,7 +701,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   IQueryable<TSource> union(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]);
 
   /**
-   * Returns sequence of elements that matches the specified criteria.
+   * Returns the sequence of elements that matches the specified criteria.
    *
    * Parameters:
    *  [bool] predicate([TSource] element)
