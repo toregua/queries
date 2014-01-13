@@ -8,7 +8,7 @@ abstract class ILookup<TKey, TElement> implements IEnumerable<IGrouping<TKey, TE
   int get length;
 }
 
-class Lookup<TKey, TElement> extends Object with Enumerable implements ILookup<TKey, TElement> {
+class Lookup<TKey, TElement> extends Object with Enumerable<IGrouping<TKey, TElement>> implements ILookup<TKey, TElement> {
   IGrouping<TKey, TElement> _current;
 
   Dictionary<TKey, IGrouping<TKey, TElement>> _groupings;
