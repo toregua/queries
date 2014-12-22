@@ -9,6 +9,7 @@ Inspired by Microsoft LINQ.
 
 **Classes**
 
+```
 Collection  
 Dictionary  
 DictionaryKeyCollection  
@@ -28,9 +29,11 @@ ReadOnlyCollection
 ReadOnlyDictionary  
 ReadOnlyDictionaryKeyCollection  
 ReadOnlyDictionaryValueCollection
+```
 
 **Methods**
 
+```
 aggregate  
 all  
 any  
@@ -77,3 +80,4 @@ toList
 toLookup  
 union  
 where
+```
