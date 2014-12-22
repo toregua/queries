@@ -42,6 +42,8 @@ void main(List<String> args) {
     template = template.replaceFirst("{{CLASSES}}", classes.join("  \n"));
     var methods = getMethods(Uri.parse("package:queries/queries.dart"), "Enumerable");
     template = template.replaceFirst("{{METHODS}}", methods.join("  \n"));
+    classes = getClasses(Uri.parse("package:queries/queries.dart"));
+    template = template.replaceFirst("{{OTHER_CLASSES}}", classes.join("  \n"));
     new File(t.name).writeAsStringSync(template);
   });
 
