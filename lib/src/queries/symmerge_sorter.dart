@@ -10,8 +10,8 @@ class _SymmergeSorter<TSource> {
   Comparator<TSource> _comparer;
 
   _SymmergeSorter(Comparator<TSource> comparer) {
-    if(comparer == null) {
-      comparer = Comparable.compare;
+    if (comparer == null) {
+      comparer = Comparable.compare as Comparator<TSource>;
     }
 
     _comparer = comparer;
@@ -23,9 +23,9 @@ class _SymmergeSorter<TSource> {
 
   int _bsearch(List<TSource> a, int l, int r, int p) {
     int mid;
-    while(l < r) {
+    while (l < r) {
       mid = (l + r) >> 1;
-      if(_comparer(a[mid], a[p - mid]) <= 0) {
+      if (_comparer(a[mid], a[p - mid]) <= 0) {
         l = mid + 1;
       } else {
         r = mid;
@@ -36,7 +36,7 @@ class _SymmergeSorter<TSource> {
   }
 
   _pswap(List<TSource> a, int index, int f, int t, int l) {
-    for(l += f; f < l; f++, t++) {
+    for (l += f; f < l; f++, t++) {
       var temp = a[index + f];
       a[index + f] = a[index + t];
       a[index + t] = temp;
@@ -54,7 +54,7 @@ class _SymmergeSorter<TSource> {
     i = p = dist;
     j = n - p;
     while (i != j) {
-      if(i > j) {
+      if (i > j) {
         _pswap(a, l, p - i, p, j);
         i -= j;
       } else {
@@ -69,16 +69,16 @@ class _SymmergeSorter<TSource> {
   void _symmerge(List<TSource> a, int first1, int first2, int last) {
     if (first1 < first2 && first2 < last) {
       var m = (first1 + last) ~/ 2;
-      var n =  m + first2;
+      var n = m + first2;
       int start;
-      if(first2 > m) {
+      if (first2 > m) {
         var l = n - last;
         var r = m;
         var p = n - 1;
         int mid;
-        while(l < r) {
+        while (l < r) {
           mid = (l + r) >> 1;
-          if(_comparer(a[mid], a[p - mid]) <= 0) {
+          if (_comparer(a[mid], a[p - mid]) <= 0) {
             l = mid + 1;
           } else {
             r = mid;
@@ -91,9 +91,9 @@ class _SymmergeSorter<TSource> {
         var r = first2;
         var p = n - 1;
         int mid;
-        while(l < r) {
+        while (l < r) {
           mid = (l + r) >> 1;
-          if(_comparer(a[mid], a[p - mid]) <= 0) {
+          if (_comparer(a[mid], a[p - mid]) <= 0) {
             l = mid + 1;
           } else {
             r = mid;
@@ -111,7 +111,7 @@ class _SymmergeSorter<TSource> {
   }
 
   _symmsort(List<TSource> a, int f, int n) {
-    if(n - f > 1) {
+    if (n - f > 1) {
       int m = (f + n) >> 1;
       _symmsort(a, f, m);
       _symmsort(a, m, n);

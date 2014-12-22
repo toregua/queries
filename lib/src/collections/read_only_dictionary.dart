@@ -1,13 +1,13 @@
 part of queries.collections;
 
-abstract class IReadOnlyDictionary<TKey, TValue>  implements IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
+abstract class IReadOnlyDictionary<TKey, TValue> implements IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
   IEqualityComparer<TKey> get comparer;
-
-  TValue operator [](TKey key);
 
   IEnumerable<TKey> get keys;
 
   IEnumerable<TValue> get values;
+
+  TValue operator [](TKey key);
 
   bool containsKey(TKey key);
 
@@ -16,7 +16,7 @@ abstract class IReadOnlyDictionary<TKey, TValue>  implements IReadOnlyCollection
 
 class ReadOnlyDictionary<TKey, TValue> extends _ReadOnlyDictionary<TKey, TValue> with Enumerable<KeyValuePair<TKey, TValue>> {
   ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
@@ -38,7 +38,7 @@ class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Enumerab
   ICollection<TKey> _items;
 
   ReadOnlyDictionaryKeyCollection._internal(ReadOnlyDictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
@@ -68,8 +68,8 @@ class ReadOnlyDictionaryKeyCollection<TKey, TValue> extends Object with Enumerab
 
   bool containsValue(TKey value) {
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(value == iterator.current) {
+    while (iterator.moveNext()) {
+      if (value == iterator.current) {
         return true;
       }
     }
@@ -97,7 +97,7 @@ class ReadOnlyDictionaryValueCollection<TKey, TValue> extends Object with Enumer
   ICollection<TValue> _items;
 
   ReadOnlyDictionaryValueCollection._internal(ReadOnlyDictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
@@ -127,8 +127,8 @@ class ReadOnlyDictionaryValueCollection<TKey, TValue> extends Object with Enumer
 
   bool containsValue(TValue value) {
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(value == iterator.current) {
+    while (iterator.moveNext()) {
+      if (value == iterator.current) {
         return true;
       }
     }
@@ -207,22 +207,26 @@ abstract class _ReadOnlyDictionary<TKey, TValue> implements ICollection<KeyValue
   }
 
   Map<TKey, TValue> toMap() {
-    var map = new LinkedHashMap(equals : _dictionary.comparer.equals, hashCode : _dictionary.comparer.getHashCode);
-    for(var kvp in this) {
+    var map = new LinkedHashMap(equals: _dictionary.comparer.equals, hashCode: _dictionary.comparer.getHashCode);
+    for (var kvp in this) {
       map[kvp.key] = kvp.value;
     }
 
     return map;
   }
 
+  String toString() {
+    return _dictionary.toString();
+  }
+
   Iterator<KeyValuePair<TKey, TValue>> _getIterator() {
     Iterator<TKey> keysIterator;
     var iterator = new _Iterator<KeyValuePair<TKey, TValue>>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(keysIterator.moveNext()) {
+            if (keysIterator.moveNext()) {
               var key = keysIterator.current;
               iterator.result = new KeyValuePair(key, _dictionary[key]);
               return true;
@@ -242,9 +246,5 @@ abstract class _ReadOnlyDictionary<TKey, TValue> implements ICollection<KeyValue
     };
 
     return iterator;
-  }
-
-  String toString() {
-    return _dictionary.toString();
   }
 }

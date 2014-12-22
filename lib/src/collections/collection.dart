@@ -1,5 +1,26 @@
 part of queries.collections;
 
+/**
+ * The [Collection] class is a wrapper for a [List].
+ */
+class Collection<TElement> extends Object with _Collection<TElement>, Enumerable<TElement> {
+  /**
+   * Constructs the collection for specified list of items.
+   *
+   * Parameters.
+   *  [List]<[TElement]> items
+   *
+   * Exceptions:
+   */
+  Collection([List<TElement> items]) {
+    if (items == null) {
+      items = <TElement>[];
+    }
+
+    _items = items;
+  }
+}
+
 abstract class ICollection<TElement> implements IEnumerable<TElement> {
   /**
    * Returns [:true:] if collection is read only; otherwise, [:false:].
@@ -85,27 +106,6 @@ abstract class ICollection<TElement> implements IEnumerable<TElement> {
   bool remove(TElement item);
 }
 
-/**
- * The [Collection] class is a wrapper for a [List].
- */
-class Collection<TElement> extends Object with _Collection<TElement>, Enumerable<TElement> {
-  /**
-   * Constructs the collection for specified list of items.
-   *
-   * Parameters.
-   *  [List]<[TElement]> items
-   *
-   * Exceptions:
-   */
-  Collection([List<TElement> items]) {
-    if(items == null) {
-      items = <TElement>[];
-    }
-
-    _items = items;
-  }
-}
-
 abstract class _Collection<TElement> implements ICollection<TElement>, IList<TElement>, IReadOnlyCollection<TElement>, IReadOnlyList<TElement> {
   List<TElement> _items;
 
@@ -120,7 +120,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    * Returns the wrapped list of collection.
    */
   List<TElement> get items {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("items");
     }
 
@@ -180,7 +180,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  [index] is out of range
    */
   void operator []=(int index, TElement item) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("items=");
     }
 
@@ -197,7 +197,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    * Exeptions:
    */
   void add(TElement element) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("add()");
     }
 
@@ -214,7 +214,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  Collection is readonly.
    */
   void clear() {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("clear()");
     }
 
@@ -259,22 +259,22 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  Insufficient size of the [list]
    */
   void copyTo(List<TElement> list, int index) {
-    if(list == null) {
+    if (list == null) {
       throw new ArgumentError("list: $list");
     }
 
-    if(index == null) {
+    if (index == null) {
       throw new ArgumentError("index: $index");
     }
 
     var length = this.length;
     var rest = length - index;
-    if(index < 0 || rest <= 0) {
+    if (index < 0 || rest <= 0) {
       throw new RangeError("index: $index");
     }
 
     var end = index + rest;
-    for(var i = index; i < end; i++) {
+    for (var i = index; i < end; i++) {
       list[i] = _items[i];
     }
   }
@@ -314,7 +314,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  TODO: Exceptions in Dart undocumented
    */
   void insert(int index, TElement item) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("insert()");
     }
 
@@ -334,7 +334,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  Collection is readonly.
    */
   bool remove(TElement item) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("remove()");
     }
 
@@ -359,7 +359,7 @@ abstract class _Collection<TElement> implements ICollection<TElement>, IList<TEl
    *  [index] out of range
    */
   TElement removeAt(int index) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("removeAt()");
     }
 

@@ -4,7 +4,7 @@ class _CastIterator<TResult> extends Object with Enumerable<TResult> {
   HasIterator<dynamic> _source;
 
   _CastIterator(HasIterator<dynamic> source) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
@@ -19,10 +19,10 @@ class _CastIterator<TResult> extends Object with Enumerable<TResult> {
     Iterator<dynamic> sourceIterator;
     var iterator = new _Iterator<dynamic>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current as TResult;
               return true;
             }
@@ -50,11 +50,11 @@ class _ConcatIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _second;
 
   _ConcatIterator(HasIterator<TSource> first, HasIterator<TSource> second) {
-    if(first == null) {
+    if (first == null) {
       throw new ArgumentError("first: $first");
     }
 
-    if(second == null) {
+    if (second == null) {
       throw new ArgumentError("second: $second");
     }
 
@@ -70,10 +70,10 @@ class _ConcatIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
               return true;
             }
@@ -82,7 +82,7 @@ class _ConcatIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = 2;
             break;
           case 2:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
               return true;
             }
@@ -110,7 +110,7 @@ class _DefaultIfEmptyIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _DefaultIfEmptyIterator(HasIterator<TSource> source, [TSource defaultValue]) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
@@ -126,10 +126,10 @@ class _DefaultIfEmptyIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 2:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
               return true;
             }
@@ -138,7 +138,7 @@ class _DefaultIfEmptyIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = -1;
             return false;
           case 1:
-            if(!sourceIterator.moveNext()) {
+            if (!sourceIterator.moveNext()) {
               iterator.result = _defaultValue;
               iterator.state = -1;
               return true;
@@ -167,11 +167,11 @@ class _DistinctIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _DistinctIterator(HasIterator<TSource> source, [IEqualityComparer<TSource> comparer]) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
@@ -188,12 +188,12 @@ class _DistinctIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
-              if(!set.contains(iterator.result)) {
+              if (!set.contains(iterator.result)) {
                 set.add(iterator.result);
                 return true;
               }
@@ -204,7 +204,7 @@ class _DistinctIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = -1;
             return false;
           case 0:
-            set = new HashSet<TSource>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            set = new HashSet<TSource>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             sourceIterator = _source.iterator;
             iterator.state = 1;
             break;
@@ -227,11 +227,57 @@ class _EmptyIterator<TSource> extends Object with Enumerable<TSource> {
   Iterator<TSource> _getIterator() {
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 0:
             iterator.state = -1;
             return false;
+          default:
+            return false;
+        }
+      }
+    };
+
+    return iterator;
+  }
+}
+
+class _EnumerableIterator<TSource> extends Object with Enumerable<TSource> {
+  // HasIterator<TSource> _source;
+  dynamic _source;
+
+  // EnumerableIterator(HasIterator<TSource> source) {
+  _EnumerableIterator(dynamic source) {
+    if (source == null) {
+      throw new ArgumentError("source: $source");
+    }
+
+    _source = source;
+  }
+
+  Iterator<TSource> get iterator {
+    return _getIterator();
+  }
+
+  Iterator<TSource> _getIterator() {
+    Iterator<TSource> sourceIterator;
+    var iterator = new _Iterator<TSource>();
+    iterator.action = () {
+      while (true) {
+        switch (iterator.state) {
+          case 1:
+            if (sourceIterator.moveNext()) {
+              iterator.result = sourceIterator.current;
+              return true;
+            }
+
+            sourceIterator = null;
+            iterator.state = -1;
+            return false;
+          case 0:
+            sourceIterator = _source.iterator;
+            iterator.state = 1;
+            break;
           default:
             return false;
         }
@@ -250,15 +296,15 @@ class _ExceptIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _second;
 
   _ExceptIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
-    if(first == null) {
+    if (first == null) {
       throw new ArgumentError("first: $first");
     }
 
-    if(second == null) {
+    if (second == null) {
       throw new ArgumentError("second: $second");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
@@ -275,10 +321,10 @@ class _ExceptIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> resultIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -287,17 +333,17 @@ class _ExceptIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = -1;
             return false;
           case 0:
-            var set = new HashSet<TSource>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            var set = new HashSet<TSource>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             var secondIterator = _second.iterator;
-            while(secondIterator.moveNext()) {
+            while (secondIterator.moveNext()) {
               set.add(secondIterator.current);
             }
 
             var firstIterator = _first.iterator;
             var result = new List<TSource>();
-            while(firstIterator.moveNext()) {
+            while (firstIterator.moveNext()) {
               var value = firstIterator.current;
-              if(!set.contains(value)) {
+              if (!set.contains(value)) {
                 result.add(value);
               }
             }
@@ -325,15 +371,15 @@ class _GroupByIterator<TSource, TKey, TElement> extends Object with Enumerable<I
   HasIterator<TSource> _source;
 
   _GroupByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), [TElement elementSelector(TSource source), IEqualityComparer<TKey> comparer]) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(keySelector == null) {
+    if (keySelector == null) {
       throw new ArgumentError("keySelector: $keySelector");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
@@ -351,10 +397,10 @@ class _GroupByIterator<TSource, TKey, TElement> extends Object with Enumerable<I
     Iterator<IGrouping<TKey, TElement>> resultIterator;
     var iterator = new _Iterator<IGrouping<TKey, TElement>>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -365,20 +411,20 @@ class _GroupByIterator<TSource, TKey, TElement> extends Object with Enumerable<I
           case 0:
             var result = new List<IGrouping<TKey, TElement>>();
             //var map = new LinkedHashMap<TKey, List<Grouping<TKey, TElement>>>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
-            var map = new LinkedHashMap<TKey, List<TElement>>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            var map = new LinkedHashMap<TKey, List<TElement>>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             var sourceIterator = _source.iterator;
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
               var key = _keySelector(current);
               TElement element;
-              if(_elementSelector != null) {
+              if (_elementSelector != null) {
                 element = _elementSelector(current);
               } else {
-                element = current;
+                element = current as TElement;
               }
 
               var elements = map[key];
-              if(elements == null) {
+              if (elements == null) {
                 elements = new List<TElement>();
                 map[key] = elements;
               }
@@ -386,7 +432,7 @@ class _GroupByIterator<TSource, TKey, TElement> extends Object with Enumerable<I
               elements.add(element);
             }
 
-            for(var key in map.keys) {
+            for (var key in map.keys) {
               result.add(new _Grouping<TKey, TElement>(key, new _EnumerableIterator<TElement>(map[key])));
             }
 
@@ -417,27 +463,27 @@ class _GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enum
   Function _resultSelector;
 
   _GroupJoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outer, IEnumerable<TInner> inner), [IEqualityComparer<TKey> comparer]) {
-    if(outer == null) {
+    if (outer == null) {
       throw new ArgumentError("outer: $outer");
     }
 
-    if(inner == null) {
+    if (inner == null) {
       throw new ArgumentError("inner: $inner");
     }
 
-    if(innerKeySelector == null) {
+    if (innerKeySelector == null) {
       throw new ArgumentError("innerKeySelector: $innerKeySelector");
     }
 
-    if(outerKeySelector == null) {
+    if (outerKeySelector == null) {
       throw new ArgumentError("outerKeySelector: $outerKeySelector");
     }
 
-    if(resultSelector == null) {
+    if (resultSelector == null) {
       throw new ArgumentError("resultSelector: $resultSelector");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
@@ -457,10 +503,10 @@ class _GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enum
     Iterator<TResult> resultIterator;
     var iterator = new _Iterator<TResult>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -469,13 +515,13 @@ class _GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enum
             iterator.state = -1;
             return false;
           case 0:
-            var innerMap = new LinkedHashMap<TKey, List<TInner>>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            var innerMap = new LinkedHashMap<TKey, List<TInner>>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             var innerIterator = _inner.iterator;
-            while(innerIterator.moveNext()) {
+            while (innerIterator.moveNext()) {
               var innerValue = innerIterator.current;
               TKey key = _innerKeySelector(innerValue);
               var elements = innerMap[key];
-              if(elements == null) {
+              if (elements == null) {
                 elements = new List<TInner>();
                 innerMap[key] = elements;
               }
@@ -485,11 +531,11 @@ class _GroupJoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enum
 
             var outerIterator = _outer.iterator;
             var result = new List<TResult>();
-            while(outerIterator.moveNext()) {
+            while (outerIterator.moveNext()) {
               var outerValue = outerIterator.current;
               TKey key = _outerKeySelector(outerValue);
               var innerValues = innerMap[key];
-              if(innerValues != null) {
+              if (innerValues != null) {
                 result.add(_resultSelector(outerValue, new _EnumerableIterator<TInner>(innerValues)));
               }
             }
@@ -515,15 +561,15 @@ class _IntersectIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _second;
 
   _IntersectIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
-    if(first == null) {
+    if (first == null) {
       throw new ArgumentError("first: $first");
     }
 
-    if(second == null) {
+    if (second == null) {
       throw new ArgumentError("second: $second");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
@@ -540,10 +586,10 @@ class _IntersectIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> resultIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -552,19 +598,19 @@ class _IntersectIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = -1;
             return false;
           case 0:
-            var firstSet = new HashSet<TSource>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
-            var outputSet = new HashSet<TSource>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            var firstSet = new HashSet<TSource>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
+            var outputSet = new HashSet<TSource>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             var firstIterator = _first.iterator;
-            while(firstIterator.moveNext()) {
+            while (firstIterator.moveNext()) {
               firstSet.add(firstIterator.current);
             }
 
             var secondterator = _second.iterator;
             var result = new List<TSource>();
-            while(secondterator.moveNext()) {
+            while (secondterator.moveNext()) {
               var value = secondterator.current;
-              if(firstSet.contains(value)) {
-                if(!outputSet.contains(value)) {
+              if (firstSet.contains(value)) {
+                if (!outputSet.contains(value)) {
                   result.add(value);
                   outputSet.add(value);
                 }
@@ -598,27 +644,27 @@ class _JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerabl
   Function _resultSelector;
 
   _JoinIterator(HasIterator<TOuter> outer, HasIterator<TInner> inner, TKey outerKeySelector(TOuter outerElement), TKey innerKeySelector(TInner innerElement), TResult resultSelector(TOuter outerElement, TInner innerElement), [IEqualityComparer<TKey> comparer]) {
-    if(outer == null) {
+    if (outer == null) {
       throw new ArgumentError("outer: $outer");
     }
 
-    if(inner == null) {
+    if (inner == null) {
       throw new ArgumentError("inner: $inner");
     }
 
-    if(innerKeySelector == null) {
+    if (innerKeySelector == null) {
       throw new ArgumentError("innerKeySelector: $innerKeySelector");
     }
 
-    if(outerKeySelector == null) {
+    if (outerKeySelector == null) {
       throw new ArgumentError("outerKeySelector: $outerKeySelector");
     }
 
-    if(resultSelector == null) {
+    if (resultSelector == null) {
       throw new ArgumentError("resultSelector: $resultSelector");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
@@ -638,10 +684,10 @@ class _JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerabl
     Iterator<TResult> resultIterator;
     var iterator = new _Iterator<TResult>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -650,13 +696,13 @@ class _JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerabl
             iterator.state = -1;
             return false;
           case 0:
-            var innerMap = new LinkedHashMap<TKey, List<TInner>>(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            var innerMap = new LinkedHashMap<TKey, List<TInner>>(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             var innerIterator = _inner.iterator;
-            while(innerIterator.moveNext()) {
+            while (innerIterator.moveNext()) {
               var innerValue = innerIterator.current;
               TKey key = _innerKeySelector(innerValue);
               var elements = innerMap[key];
-              if(elements == null) {
+              if (elements == null) {
                 elements = new List<TInner>();
                 innerMap[key] = elements;
               }
@@ -666,12 +712,12 @@ class _JoinIterator<TOuter, TInner, TKey, TResult> extends Object with Enumerabl
 
             var outerIterator = _outer.iterator;
             var result = new List<TResult>();
-            while(outerIterator.moveNext()) {
+            while (outerIterator.moveNext()) {
               var outerValue = outerIterator.current;
               TKey key = _outerKeySelector(outerValue);
               var innerValues = innerMap[key];
-              if(innerValues != null) {
-                for(var innerValue in innerValues) {
+              if (innerValues != null) {
+                for (var innerValue in innerValues) {
                   result.add(_resultSelector(outerValue, innerValue));
                 }
               }
@@ -694,7 +740,7 @@ class _OfTypeIterator<TResult> extends Object with Enumerable<TResult> {
   HasIterator<dynamic> _source;
 
   _OfTypeIterator(HasIterator<dynamic> source) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
@@ -709,12 +755,12 @@ class _OfTypeIterator<TResult> extends Object with Enumerable<TResult> {
     Iterator<dynamic> sourceIterator;
     var iterator = new _Iterator<TResult>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(current is TResult) {
+              if (current is TResult) {
                 iterator.result = current;
                 return true;
               }
@@ -747,16 +793,16 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
   HasIterator<TSource> _source;
 
   _OrderByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(keySelector == null) {
+    if (keySelector == null) {
       throw new ArgumentError("keySelector: $keySelector");
     }
 
-    if(comparer == null) {
-      comparer = Comparable.compare;
+    if (comparer == null) {
+      comparer = Comparable.compare as Comparator<TKey>;
     }
 
     _comparer = comparer;
@@ -782,10 +828,10 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
     Comparator<TSource> sourceComparer;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -795,7 +841,7 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
             return false;
           case 0:
             Comparator<TSource> comparer;
-            if(_descending) {
+            if (_descending) {
               comparer = (TSource a, TSource b) => -_comparer(keySelector(a), keySelector(b));
             } else {
               comparer = (TSource a, TSource b) => _comparer(keySelector(a), keySelector(b));
@@ -804,58 +850,12 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
             var sorter = new _SymmergeSorter<TSource>(comparer);
             var result = <TSource>[];
             var sourceIterator = _source.iterator;
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               result.add(sourceIterator.current);
             }
 
             sorter.sort(result);
             resultIterator = result.iterator;
-            iterator.state = 1;
-            break;
-          default:
-            return false;
-        }
-      }
-    };
-
-    return iterator;
-  }
-}
-
-class _EnumerableIterator<TSource> extends Object with Enumerable<TSource> {
-  // HasIterator<TSource> _source;
-  dynamic _source;
-
-  // EnumerableIterator(HasIterator<TSource> source) {
-  _EnumerableIterator(dynamic source) {
-    if(source == null) {
-      throw new ArgumentError("source: $source");
-    }
-
-    _source = source;
-  }
-
-  Iterator<TSource> get iterator {
-    return _getIterator();
-  }
-
-  Iterator<TSource> _getIterator() {
-    Iterator<TSource> sourceIterator;
-    var iterator = new _Iterator<TSource>();
-    iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
-          case 1:
-            if(sourceIterator.moveNext()) {
-              iterator.result = sourceIterator.current;
-              return true;
-            }
-
-            sourceIterator = null;
-            iterator.state = -1;
-            return false;
-          case 0:
-            sourceIterator = _source.iterator;
             iterator.state = 1;
             break;
           default:
@@ -874,15 +874,15 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
   int _start;
 
   _RangeIterator(int start, int count) {
-    if(count == null || count < 0) {
+    if (count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
 
-    if(start == null) {
+    if (start == null) {
       throw new ArgumentError("start: $start");
     }
 
-    if(start + count - 1 > 0x7fffffff) {
+    if (start + count - 1 > 0x7fffffff) {
       throw new RangeError.value(start + count - 1);
     }
 
@@ -898,10 +898,10 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
     int count;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(count-- > 0) {
+            if (count-- > 0) {
               iterator.result++;
               return true;
             }
@@ -910,7 +910,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
             return false;
           case 0:
             count = _count;
-            if(count-- > 0) {
+            if (count-- > 0) {
               iterator.result = _start;
               iterator.state = 1;
               return true;
@@ -935,7 +935,7 @@ class _RepeatIterator<TSource> extends Object with Enumerable<TSource> {
   TSource _element;
 
   _RepeatIterator(TSource element, int count) {
-    if(count == null || count < 0) {
+    if (count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
 
@@ -951,10 +951,10 @@ class _RepeatIterator<TSource> extends Object with Enumerable<TSource> {
     int count;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(count-- > 0) {
+            if (count-- > 0) {
               return true;
             }
 
@@ -962,7 +962,7 @@ class _RepeatIterator<TSource> extends Object with Enumerable<TSource> {
             return false;
           case 0:
             count = _count;
-            if(count-- > 0) {
+            if (count-- > 0) {
               iterator.result = _element;
               iterator.state = 1;
               return true;
@@ -986,11 +986,11 @@ class _SelectIterator<TSource, TResult> extends Object with Enumerable<TResult> 
   HasIterator<TSource> _source;
 
   _SelectIterator(HasIterator<TSource> source, TResult selector(TSource element)) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(selector == null) {
+    if (selector == null) {
       throw new ArgumentError("selector: $selector");
     }
 
@@ -1006,10 +1006,10 @@ class _SelectIterator<TSource, TResult> extends Object with Enumerable<TResult> 
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TResult>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = _selector(sourceIterator.current);
               return true;
             }
@@ -1037,11 +1037,11 @@ class _SelectManyIterator<TSource, TResult> extends Object with Enumerable<TResu
   HasIterator<TSource> _source;
 
   _SelectManyIterator(HasIterator<TSource> source, IEnumerable<TResult> selector(TSource element)) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(selector == null) {
+    if (selector == null) {
       throw new ArgumentError("selector: $selector");
     }
 
@@ -1058,10 +1058,10 @@ class _SelectManyIterator<TSource, TResult> extends Object with Enumerable<TResu
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TResult>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 2:
-            if(elementIterator.moveNext()) {
+            if (elementIterator.moveNext()) {
               iterator.result = elementIterator.current;
               return true;
             }
@@ -1070,7 +1070,7 @@ class _SelectManyIterator<TSource, TResult> extends Object with Enumerable<TResu
             iterator.state = 1;
             break;
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               IEnumerable<TResult> element = _selector(sourceIterator.current);
               elementIterator = element.iterator;
               iterator.state = 2;
@@ -1100,11 +1100,11 @@ class _SkipIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _SkipIterator(HasIterator<TSource> source, int count) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(count == null || count < 0) {
+    if (count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
 
@@ -1121,10 +1121,10 @@ class _SkipIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
               return true;
             }
@@ -1135,9 +1135,9 @@ class _SkipIterator<TSource> extends Object with Enumerable<TSource> {
           case 0:
             count = _count;
             sourceIterator = _source.iterator;
-            while(count > 0) {
+            while (count > 0) {
               count--;
-              if(!sourceIterator.moveNext()) {
+              if (!sourceIterator.moveNext()) {
                 sourceIterator = null;
                 iterator.state = -1;
                 return false;
@@ -1163,11 +1163,11 @@ class _SkipWhileIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _SkipWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(predicate == null) {
+    if (predicate == null) {
       throw new ArgumentError("predicate: $predicate");
     }
 
@@ -1183,10 +1183,10 @@ class _SkipWhileIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               iterator.result = sourceIterator.current;
               return true;
             }
@@ -1196,9 +1196,9 @@ class _SkipWhileIterator<TSource> extends Object with Enumerable<TSource> {
             return false;
           case 0:
             sourceIterator = _source.iterator;
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(!_predicate(current)) {
+              if (!_predicate(current)) {
                 iterator.state = 1;
                 iterator.result = sourceIterator.current;
                 return true;
@@ -1225,11 +1225,11 @@ class _TakeIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _TakeIterator(HasIterator<TSource> source, int count) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(count == null || count < 0) {
+    if (count == null || count < 0) {
       throw new ArgumentError("count: $count");
     }
 
@@ -1246,12 +1246,12 @@ class _TakeIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(count > 0) {
+            if (count > 0) {
               count--;
-              if(sourceIterator.moveNext()) {
+              if (sourceIterator.moveNext()) {
                 iterator.result = sourceIterator.current;
                 return true;
               }
@@ -1282,11 +1282,11 @@ class _TakeWhileIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _TakeWhileIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(predicate == null) {
+    if (predicate == null) {
       throw new ArgumentError("predicate: $predicate");
     }
 
@@ -1302,12 +1302,12 @@ class _TakeWhileIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(_predicate(current)) {
+              if (_predicate(current)) {
                 iterator.result = current;
                 return true;
               }
@@ -1343,10 +1343,10 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
     Iterator<TSource> resultIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(resultIterator.moveNext()) {
+            if (resultIterator.moveNext()) {
               iterator.result = resultIterator.current;
               return true;
             }
@@ -1357,7 +1357,7 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
           case 0:
             List<TSource> result = new List<TSource>();
             Iterator<TSource> sourceIterator = _source.iterator;
-            if(sourceIterator.moveNext()) {
+            if (sourceIterator.moveNext()) {
               Comparator<TSource> comparer;
               TSource current;
               var group = new List<TSource>();
@@ -1365,7 +1365,7 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
               var length = 1;
               Comparator<TSource> prevComparer;
               TSource previous = sourceIterator.current;
-              if(_descending) {
+              if (_descending) {
                 var sourceKeySelector = _source.keySelector;
                 var sourceComparer = _source.comparer;
                 comparer = (TSource a, TSource b) => -_comparer(_keySelector(a), _keySelector(b));
@@ -1379,10 +1379,10 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
 
               var sorter = new _SymmergeSorter<TSource>(comparer);
               group.add(previous);
-              while(true) {
-                while(sourceIterator.moveNext()) {
+              while (true) {
+                while (sourceIterator.moveNext()) {
                   current = sourceIterator.current;
-                  if(prevComparer(previous, current) == 0) {
+                  if (prevComparer(previous, current) == 0) {
                     group.add(current);
                     previous = current;
                     length++;
@@ -1392,12 +1392,12 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
                   }
                 }
 
-                if(length != 0) {
-                  switch(length) {
+                if (length != 0) {
+                  switch (length) {
                     case 1:
                       break;
                     case 2:
-                      if(comparer(group[0], group[1]) > 0) {
+                      if (comparer(group[0], group[1]) > 0) {
                         var swap = group[0];
                         group[0] = group[1];
                         group[1] = swap;
@@ -1409,7 +1409,7 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
                   }
 
                   result.addAll(group);
-                  if(!hasCurrent) {
+                  if (!hasCurrent) {
                     break;
                   }
 
@@ -1445,15 +1445,15 @@ class _UnionIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _second;
 
   _UnionIterator(HasIterator<TSource> first, HasIterator<TSource> second, [IEqualityComparer<TSource> comparer]) {
-    if(first == null) {
+    if (first == null) {
       throw new ArgumentError("first: $first");
     }
 
-    if(second == null) {
+    if (second == null) {
       throw new ArgumentError("second: $second");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
@@ -1471,12 +1471,12 @@ class _UnionIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 2:
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(!set.contains(current)) {
+              if (!set.contains(current)) {
                 set.add(current);
                 iterator.result = current;
                 return true;
@@ -1489,9 +1489,9 @@ class _UnionIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = -1;
             return false;
           case 1:
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(!set.contains(current)) {
+              if (!set.contains(current)) {
                 set.add(current);
                 iterator.result = current;
                 return true;
@@ -1502,7 +1502,7 @@ class _UnionIterator<TSource> extends Object with Enumerable<TSource> {
             iterator.state = 2;
             break;
           case 0:
-            set = new HashSet(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+            set = new HashSet(equals: _comparer.equals, hashCode: _comparer.getHashCode);
             sourceIterator = _first.iterator;
             iterator.state = 1;
             break;
@@ -1523,11 +1523,11 @@ class _WhereIterator<TSource> extends Object with Enumerable<TSource> {
   HasIterator<TSource> _source;
 
   _WhereIterator(HasIterator<TSource> source, bool predicate(TSource element)) {
-    if(source == null) {
+    if (source == null) {
       throw new ArgumentError("source: $source");
     }
 
-    if(predicate == null) {
+    if (predicate == null) {
       throw new ArgumentError("predicate: $predicate");
     }
 
@@ -1543,12 +1543,12 @@ class _WhereIterator<TSource> extends Object with Enumerable<TSource> {
     Iterator<TSource> sourceIterator;
     var iterator = new _Iterator<TSource>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            while(sourceIterator.moveNext()) {
+            while (sourceIterator.moveNext()) {
               var current = sourceIterator.current;
-              if(_predicate(current)) {
+              if (_predicate(current)) {
                 iterator.result = current;
                 return true;
               }

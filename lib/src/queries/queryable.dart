@@ -3,9 +3,9 @@ part of queries;
 abstract class IQueryable<TSource> implements IEnumerable<TSource> {
   Type get elementType;
 
-  Expression get expression;
+  // Expression get expression;
 
-  IQueryProvider get provider;
+  // IQueryProvider get provider;
 
   /**
    * Returns the accumulated result from all elements by the provided

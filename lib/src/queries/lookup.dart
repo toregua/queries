@@ -1,11 +1,11 @@
 part of queries;
 
 abstract class ILookup<TKey, TElement> implements IEnumerable<IGrouping<TKey, TElement>> {
+  int get length;
+
   IEnumerable<TElement> operator [](TKey key);
 
   bool containsKey(TKey key);
-
-  int get length;
 }
 
 class Lookup<TKey, TElement> extends Object with Enumerable<IGrouping<TKey, TElement>> implements ILookup<TKey, TElement> {
@@ -31,7 +31,7 @@ class Lookup<TKey, TElement> extends Object with Enumerable<IGrouping<TKey, TEle
 
   IEnumerable<TElement> operator [](TKey key) {
     var grouping = _groupings[key];
-    if(grouping != null) {
+    if (grouping != null) {
       return grouping;
     }
 
@@ -42,11 +42,11 @@ class Lookup<TKey, TElement> extends Object with Enumerable<IGrouping<TKey, TEle
    * IQueryable<TResult> applyResultSelector<TResult>(TResult resultSelector(TKey key, IQueryable<TElement> elements)) {
    */
   IEnumerable<dynamic> applyResultSelector(dynamic resultSelector(TKey key, IEnumerable<TElement> elements)) {
-    if(resultSelector == null) {
+    if (resultSelector == null) {
       throw new ArgumentError("resultSelector: $resultSelector");
     }
 
-    return select((g) => resultSelector(g.key, g.elements));
+    return select((g) => resultSelector(g.key, g));
   }
 
   bool containsKey(TKey key) {

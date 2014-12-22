@@ -8,11 +8,11 @@ class KeyValuePair<TKey, TValue> {
   KeyValuePair(this.key, this.value);
 
   bool operator ==(other) {
-    if(identical(this, other)) {
+    if (identical(this, other)) {
       return true;
     }
 
-    if(other is KeyValuePair) {
+    if (other is KeyValuePair) {
       return key == other.key && value == other.value;
     }
 

@@ -13,9 +13,9 @@ class _Grouping<TKey, TElement> extends _EnumerableIterator<TElement> implements
     _key = key;
   }
 
-  TKey get key => _key;
-
   Iterator<TElement> get iterator {
     return _source.iterator;
   }
+
+  TKey get key => _key;
 }

@@ -1,6 +1,7 @@
 library queries.collections;
 
 import 'dart:collection';
+
 import 'package:queries/queries.dart';
 
 part 'src/collections/collection.dart';

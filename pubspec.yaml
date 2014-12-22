@@ -1,9 +1,9 @@
 name: queries
+version: 0.0.15
 author: Andrew Mezoni <andrew.mezoni@gmail.com>
-version: 0.0.14
-homepage: https://github.com/mezoni/queries
 description: Queryable collections for Dart language.
-dependencies:
-  reflection: any
+homepage: https://github.com/mezoni/queries
 dev_dependencies:
+  build_tools: any
+  file_utils: any
   unittest: any

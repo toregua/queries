@@ -1,66 +1,42 @@
 part of queries.collections;
 
-abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
-  IEqualityComparer<TKey> get comparer;
-
-  ICollection<TKey> get keys;
-
-  ICollection<TValue> get values;
-
-  TValue operator [](TKey key);
-
-  void operator []=(TKey key, TValue value);
-
-  void add(KeyValuePair<TKey, TValue> element);
-
-  void clear();
-
-  bool containsKey(TKey key);
-
-  bool remove(KeyValuePair<TKey, TValue> element);
-
-  bool removeKey(TKey key);
-
-  Map<TKey, TValue> toMap();
-}
-
 class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Enumerable<KeyValuePair<TKey, TValue>> {
   Dictionary([IEqualityComparer<TKey> comparer]) {
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
     _comparer = comparer;
-    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
+    _source = new LinkedHashMap(equals: comparer.equals, hashCode: comparer.getHashCode);
   }
 
   Dictionary.fromDictionary(IDictionary<TKey, TValue> dictionary, [IEqualityComparer<TKey> comparer]) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
     _comparer = comparer;
-    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
-    for(var kvp in dictionary) {
+    _source = new LinkedHashMap(equals: comparer.equals, hashCode: comparer.getHashCode);
+    for (var kvp in dictionary) {
       _source[kvp.key] = kvp.value;
     }
   }
 
   Dictionary.fromMap(Map<TKey, TValue> map, [IEqualityComparer<TKey> comparer]) {
-    if(map == null) {
+    if (map == null) {
       throw new ArgumentError("map: $map");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TKey>();
     }
 
     _comparer = comparer;
-    _source = new LinkedHashMap(equals : comparer.equals, hashCode : comparer.getHashCode);
+    _source = new LinkedHashMap(equals: comparer.equals, hashCode: comparer.getHashCode);
     _source.addAll(map);
   }
 
@@ -79,7 +55,7 @@ class DictionaryKeyCollection<TKey, TValue> extends Object with Enumerable<TKey>
   Iterable<TKey> _items;
 
   DictionaryKeyCollection(Dictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
@@ -109,8 +85,8 @@ class DictionaryKeyCollection<TKey, TValue> extends Object with Enumerable<TKey>
 
   bool containsValue(TKey value) {
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(value == iterator.current) {
+    while (iterator.moveNext()) {
+      if (value == iterator.current) {
         return true;
       }
     }
@@ -138,7 +114,7 @@ class DictionaryValueCollection<TKey, TValue> extends Object with Enumerable<TVa
   Iterable<TValue> _items;
 
   DictionaryValueCollection(Dictionary<TKey, TValue> dictionary) {
-    if(dictionary == null) {
+    if (dictionary == null) {
       throw new ArgumentError("dictionary: $dictionary");
     }
 
@@ -168,8 +144,8 @@ class DictionaryValueCollection<TKey, TValue> extends Object with Enumerable<TVa
 
   bool containsValue(TValue value) {
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(value == iterator.current) {
+    while (iterator.moveNext()) {
+      if (value == iterator.current) {
         return true;
       }
     }
@@ -191,6 +167,30 @@ class DictionaryValueCollection<TKey, TValue> extends Object with Enumerable<TVa
   }
 }
 
+abstract class IDictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>> {
+  IEqualityComparer<TKey> get comparer;
+
+  ICollection<TKey> get keys;
+
+  ICollection<TValue> get values;
+
+  TValue operator [](TKey key);
+
+  void operator []=(TKey key, TValue value);
+
+  void add(KeyValuePair<TKey, TValue> element);
+
+  void clear();
+
+  bool containsKey(TKey key);
+
+  bool remove(KeyValuePair<TKey, TValue> element);
+
+  bool removeKey(TKey key);
+
+  Map<TKey, TValue> toMap();
+}
+
 abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IReadOnlyDictionary<TKey, TValue> {
   IEqualityComparer<TKey> _comparer;
 
@@ -200,12 +200,12 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
     return _comparer;
   }
 
-  Iterator<KeyValuePair<TKey, TValue>> get iterator {
-    return _getIterator();
-  }
-
   bool get isReadOnly {
     return false;
+  }
+
+  Iterator<KeyValuePair<TKey, TValue>> get iterator {
+    return _getIterator();
   }
 
   int get length {
@@ -217,7 +217,7 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   void operator []=(TKey key, TValue value) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("operator []=");
     }
 
@@ -225,11 +225,11 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   void add(KeyValuePair<TKey, TValue> element) {
-    if(element == null) {
+    if (element == null) {
       throw new ArgumentError("element: $element");
     }
 
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("add()");
     }
 
@@ -237,7 +237,7 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   void clear() {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("clear())");
     }
 
@@ -249,7 +249,7 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   bool containsValue(KeyValuePair<TKey, TValue> item) {
-    if(item == null) {
+    if (item == null) {
       throw new ArgumentError("item: $item");
     }
 
@@ -263,11 +263,11 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   bool remove(KeyValuePair<TKey, TValue> element) {
-    if(element == null) {
+    if (element == null) {
       throw new ArgumentError("element: $element");
     }
 
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("remove())");
     }
 
@@ -275,12 +275,12 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   bool removeKey(TKey key) {
-    if(isReadOnly) {
+    if (isReadOnly) {
       throw new UnsupportedError("removeKey())");
     }
 
     var contains = _source.containsKey(key);
-    if(contains) {
+    if (contains) {
       _source.remove(key);
       return true;
     }
@@ -289,19 +289,23 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
   }
 
   Map<TKey, TValue> toMap() {
-    var map = new LinkedHashMap(equals : _comparer.equals, hashCode : _comparer.getHashCode);
+    var map = new LinkedHashMap(equals: _comparer.equals, hashCode: _comparer.getHashCode);
     map.addAll(_source);
     return map;
+  }
+
+  String toString() {
+    return _source.toString();
   }
 
   Iterator<KeyValuePair<TKey, TValue>> _getIterator() {
     Iterator<TKey> keysIterator;
     var iterator = new _Iterator<KeyValuePair<TKey, TValue>>();
     iterator.action = () {
-      while(true) {
-        switch(iterator.state) {
+      while (true) {
+        switch (iterator.state) {
           case 1:
-            if(keysIterator.moveNext()) {
+            if (keysIterator.moveNext()) {
               var key = keysIterator.current;
               iterator.result = new KeyValuePair(key, _source[key]);
               return true;
@@ -321,9 +325,5 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
     };
 
     return iterator;
-  }
-
-  String toString() {
-    return _source.toString();
   }
 }

@@ -2,49 +2,6 @@ part of queries;
 
 abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   /**
-   * Returns the sequence of integer values in the specified range.
-   *
-   * Parameters:
-   *  [int] start
-   *  Lower bound value.
-   *
-   *  [int] count
-   *  Number of values.
-   *
-   * Exceptions:
-   *  [ArgumentError]
-   *  [start] is [:null:]
-   *
-   *  [ArgumentError]
-   *  [count] is [:null:]
-   *
-   *  [RangeError]
-   *  [start] + [count] - 1 > 0x7fffffff
-   */
-  static Enumerable<dynamic> range(int start, int count) {
-    return new _RangeIterator<dynamic>(start, count);
-  }
-
-  /**
-   * Returns the sequence that consists from specified number of elements.
-   *
-   * Parameters:
-   *  [TElement] element
-   *  Element of sequence.
-   *
-   *  [int] count
-   *  Number of elements.
-   *
-   *  [ArgumentError]
-   *  [count] is [:null:]
-   *   OR
-   *  [count] < 0
-   */
-  static Enumerable<dynamic> repeat(dynamic element, int count) {
-    return new _RepeatIterator<dynamic>(element, count);
-  }
-
-  /**
    * Returns the accumulated result from all elements by the provided
    * accumulator function.
    *
@@ -64,25 +21,25 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *  The sequence is empty.
    */
   TSource aggregate(TSource func(TSource accumulator, TSource element), [TSource seed]) {
-    if(func == null) {
+    if (func == null) {
       throw new ArgumentError("func: $func");
     }
 
     TSource result = seed;
     var iterator = this.iterator;
-    if(!iterator.moveNext()) {
-      if(result == null) {
+    if (!iterator.moveNext()) {
+      if (result == null) {
         throw new StateError("The source sequence is empty");
       }
     } else {
-      if(result == null) {
+      if (result == null) {
         result = iterator.current;
       } else {
         result = func(result, iterator.current);
       }
     }
 
-    while(iterator.moveNext()) {
+    while (iterator.moveNext()) {
       result = func(result, iterator.current);
     }
 
@@ -103,13 +60,13 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *  [predicate] is [:null:]
    */
   bool all(bool predicate(TSource element)) {
-    if(predicate == null) {
+    if (predicate == null) {
       throw new ArgumentError("predicate: $predicate");
     }
 
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(!predicate(iterator.current)) {
+    while (iterator.moveNext()) {
+      if (!predicate(iterator.current)) {
         return false;
       }
     }
@@ -133,16 +90,16 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    */
   bool any([bool predicate(TSource element)]) {
     var iterator = this.iterator;
-    if(predicate == null) {
-      if(iterator.moveNext()) {
+    if (predicate == null) {
+      if (iterator.moveNext()) {
         return true;
       } else {
         return false;
       }
     }
 
-    while(iterator.moveNext()) {
-      if(predicate(iterator.current)) {
+    while (iterator.moveNext()) {
+      if (predicate(iterator.current)) {
         return true;
       }
     }
@@ -190,25 +147,25 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     var count = 1;
     num sum;
     var iterator = this.iterator;
-    if(selector == null) {
-      if(!iterator.moveNext()) {
+    if (selector == null) {
+      if (!iterator.moveNext()) {
         throw new StateError("The source sequence is empty");
       } else {
-        sum = iterator.current;
+        sum = iterator.current as num;
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         count++;
         sum += iterator.current;
       }
     } else {
-      if(!iterator.moveNext()) {
+      if (!iterator.moveNext()) {
         throw new StateError("The source sequence is empty");
       } else {
         sum = selector(iterator.current);
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         count++;
         sum += selector(iterator.current);
       }
@@ -258,13 +215,13 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    * Exceptions:
    */
   bool contains(TSource value, [IEqualityComparer<TSource> comparer]) {
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(comparer.equals(value, iterator.current)) {
+    while (iterator.moveNext()) {
+      if (comparer.equals(value, iterator.current)) {
         return true;
       }
     }
@@ -288,13 +245,13 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   int count([bool predicate(TSource element)]) {
     var count = 0;
     var iterator = this.iterator;
-    if(predicate == null) {
-      while(iterator.moveNext()) {
+    if (predicate == null) {
+      while (iterator.moveNext()) {
         count++;
       }
     } else {
-      while(iterator.moveNext()) {
-        if(predicate(iterator.current)) {
+      while (iterator.moveNext()) {
+        if (predicate(iterator.current)) {
           count++;
         }
       }
@@ -345,19 +302,19 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *  [index] out of range
    */
   TSource elementAt(int index) {
-    if(index == null || index < 0) {
+    if (index == null || index < 0) {
       throw new RangeError("index: $index");
     }
 
-    if(this is IList<TSource>) {
+    if (this is IList<TSource>) {
       var list = this as IList<TSource>;
       return list[index];
     }
 
     var counter = 0;
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(counter++ == index) {
+    while (iterator.moveNext()) {
+      if (counter++ == index) {
         return iterator.current;
       }
     }
@@ -381,13 +338,13 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    */
   TSource elementAtOrDefault(int index) {
     TSource result;
-    if(index == null || index < 0) {
+    if (index == null || index < 0) {
       return result;
     }
 
-    if(this is IList<TSource>) {
+    if (this is IList<TSource>) {
       var list = this as IList<TSource>;
-      if(index + 1 > list.length) {
+      if (index + 1 > list.length) {
         return result;
       }
 
@@ -396,8 +353,8 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
 
     var counter = 0;
     var iterator = this.iterator;
-    while(iterator.moveNext()) {
-      if(counter++ == index) {
+    while (iterator.moveNext()) {
+      if (counter++ == index) {
         return iterator.current;
       }
     }
@@ -440,15 +397,15 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    */
   TSource first([bool predicate(TSource element)]) {
     var iterator = this.iterator;
-    if(predicate == null) {
-      if(iterator.moveNext()) {
+    if (predicate == null) {
+      if (iterator.moveNext()) {
         return iterator.current;
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
+        if (predicate(current)) {
           return current;
         }
       }
@@ -477,15 +434,15 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   TSource firstOrDefault([bool predicate(TSource element)]) {
     var iterator = this.iterator;
     TSource result;
-    if(predicate == null) {
-      if(iterator.moveNext()) {
+    if (predicate == null) {
+      if (iterator.moveNext()) {
         return iterator.current;
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
+        if (predicate(current)) {
           return current;
         }
       }
@@ -632,23 +589,23 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     var iterator = this.iterator;
     var length = 0;
     TSource result;
-    if(predicate == null) {
-      while(iterator.moveNext()) {
+    if (predicate == null) {
+      while (iterator.moveNext()) {
         length++;
         result = iterator.current;
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
+        if (predicate(current)) {
           length++;
           result = current;
         }
       }
     }
 
-    if(length == 0) {
+    if (length == 0) {
       throw new StateError("The source sequence is empty");
     }
 
@@ -675,15 +632,15 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   TSource lastOrDefault([bool predicate(TSource element)]) {
     var iterator = this.iterator;
     TSource result;
-    if(predicate == null) {
-      while(iterator.moveNext()) {
+    if (predicate == null) {
+      while (iterator.moveNext()) {
         result = iterator.current;
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
+        if (predicate(current)) {
           result = current;
         }
       }
@@ -706,29 +663,29 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   num max([num selector(TSource element)]) {
     num min;
     var iterator = this.iterator;
-    if(selector == null) {
-      if(!iterator.moveNext()) {
+    if (selector == null) {
+      if (!iterator.moveNext()) {
         return min;
       } else {
-        min = iterator.current;
+        min = iterator.current as num;
       }
 
-      while(iterator.moveNext()) {
-        num value = iterator.current;
-        if(value != null && value > min) {
+      while (iterator.moveNext()) {
+        num value = iterator.current as num;
+        if (value != null && value > min) {
           min = value;
         }
       }
     } else {
-      if(!iterator.moveNext()) {
+      if (!iterator.moveNext()) {
         return min;
       } else {
         min = selector(iterator.current);
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         num value = selector(iterator.current);
-        if(value != null && value > min) {
+        if (value != null && value > min) {
           min = value;
         }
       }
@@ -751,29 +708,29 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   num min([num selector(TSource element)]) {
     num min;
     var iterator = this.iterator;
-    if(selector == null) {
-      if(!iterator.moveNext()) {
+    if (selector == null) {
+      if (!iterator.moveNext()) {
         return min;
       } else {
-        min = iterator.current;
+        min = iterator.current as num;
       }
 
-      while(iterator.moveNext()) {
-        num value = iterator.current;
-        if(value != null && value < min) {
+      while (iterator.moveNext()) {
+        num value = iterator.current as num;
+        if (value != null && value < min) {
           min = value;
         }
       }
     } else {
-      if(!iterator.moveNext()) {
+      if (!iterator.moveNext()) {
         return min;
       } else {
         min = selector(iterator.current);
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         num value = selector(iterator.current);
-        if(value != null && value < min) {
+        if (value != null && value < min) {
           min = value;
         }
       }
@@ -885,16 +842,16 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   bool sequenceEqual(HasIterator<TSource> other, [IEqualityComparer<TSource> comparer]) {
     Iterator<TSource> iterator1 = this.iterator;
     Iterator<TSource> iterator2 = other.iterator;
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<TSource>();
     }
 
-    while(iterator1.moveNext()) {
-      if(!iterator2.moveNext()) {
+    while (iterator1.moveNext()) {
+      if (!iterator2.moveNext()) {
         return false;
       }
 
-      if(!comparer.equals(iterator1.current, iterator2.current)) {
+      if (!comparer.equals(iterator1.current, iterator2.current)) {
         return false;
       }
     }
@@ -925,10 +882,10 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     var iterator = this.iterator;
     var length = 0;
     TSource result;
-    if(predicate == null) {
-      while(iterator.moveNext()) {
+    if (predicate == null) {
+      while (iterator.moveNext()) {
         result = iterator.current;
-        if(length > 0) {
+        if (length > 0) {
           throw new StateError("The source sequence contains more than one element");
         } else {
           length++;
@@ -936,10 +893,10 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
-          if(length > 0) {
+        if (predicate(current)) {
+          if (length > 0) {
             throw new StateError("The source sequence contains more than one element");
           } else {
             result = current;
@@ -949,7 +906,7 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
       }
     }
 
-    if(length == 0) {
+    if (length == 0) {
       throw new StateError("The source sequence is empty");
     }
 
@@ -976,10 +933,10 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     var iterator = this.iterator;
     var length = 0;
     TSource result;
-    if(predicate == null) {
-      while(iterator.moveNext()) {
+    if (predicate == null) {
+      while (iterator.moveNext()) {
         result = iterator.current;
-        if(length > 0) {
+        if (length > 0) {
           throw new StateError("The source sequence contains more than one element");
         } else {
           length++;
@@ -987,10 +944,10 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
       }
 
     } else {
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         var current = iterator.current;
-        if(predicate(current)) {
-          if(length > 0) {
+        if (predicate(current)) {
+          if (length > 0) {
             throw new StateError("The source sequence contains more than one element");
           } else {
             result = current;
@@ -1048,24 +1005,24 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
   num sum([num selector(TSource element)]) {
     num sum;
     var iterator = this.iterator;
-    if(selector == null) {
-      if(!iterator.moveNext()) {
+    if (selector == null) {
+      if (!iterator.moveNext()) {
         return sum;
       } else {
-        sum = iterator.current;
+        sum = iterator.current as num;
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         sum += iterator.current;
       }
     } else {
-      if(!iterator.moveNext()) {
+      if (!iterator.moveNext()) {
         return sum;
       } else {
         sum = selector(iterator.current);
       }
 
-      while(iterator.moveNext()) {
+      while (iterator.moveNext()) {
         sum += selector(iterator.current);
       }
     }
@@ -1135,16 +1092,16 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *  [keySelector] is [:null:]
    */
   Dictionary<dynamic, dynamic> toDictionary(dynamic keySelector(TSource source), [dynamic elementSelector(TSource source), IEqualityComparer<dynamic> comparer]) {
-    if(keySelector == null) {
+    if (keySelector == null) {
       throw new ArgumentError("keySelector: $keySelector");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<dynamic>();
     }
 
     var dictionary = new Dictionary<dynamic, dynamic>(comparer);
-    for(var grouping in groupBy(keySelector, elementSelector, comparer)) {
+    for (var grouping in groupBy(keySelector, elementSelector, comparer)) {
       dictionary[grouping.key] = grouping.lastOrDefault();
     }
 
@@ -1158,20 +1115,20 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *
    * Exceptions:
    */
-  List<TSource> toList({bool growable : true}) {
+  List<TSource> toList({bool growable: true}) {
     var iterator = this.iterator;
     var list = <TSource>[];
-    while(iterator.moveNext()) {
+    while (iterator.moveNext()) {
       list.add(iterator.current);
     }
 
-    if(growable) {
+    if (growable) {
       return list;
     }
 
     var length = list.length;
     var fixedList = new List<TSource>(length);
-    for(var i = 0; i < length; i++) {
+    for (var i = 0; i < length; i++) {
       fixedList[i] = list[i];
     }
 
@@ -1197,16 +1154,16 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    *  [keySelector] is [:null:]
    */
   Lookup<dynamic, dynamic> toLookup(dynamic keySelector(TSource source), [dynamic elementSelector(TSource source), IEqualityComparer<dynamic> comparer]) {
-    if(keySelector == null) {
+    if (keySelector == null) {
       throw new ArgumentError("keySelector: $keySelector");
     }
 
-    if(comparer == null) {
+    if (comparer == null) {
       comparer = new EqualityComparer<dynamic>();
     }
 
     var dictionary = new Dictionary<dynamic, IGrouping<dynamic, dynamic>>(comparer);
-    for(var grouping in groupBy(keySelector, elementSelector, comparer)) {
+    for (var grouping in groupBy(keySelector, elementSelector, comparer)) {
       dictionary[grouping.key] = grouping;
     }
 
@@ -1246,5 +1203,48 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
    */
   Enumerable<TSource> where(bool predicate(TSource element)) {
     return new _WhereIterator<TSource>(this, predicate);
+  }
+
+  /**
+   * Returns the sequence of integer values in the specified range.
+   *
+   * Parameters:
+   *  [int] start
+   *  Lower bound value.
+   *
+   *  [int] count
+   *  Number of values.
+   *
+   * Exceptions:
+   *  [ArgumentError]
+   *  [start] is [:null:]
+   *
+   *  [ArgumentError]
+   *  [count] is [:null:]
+   *
+   *  [RangeError]
+   *  [start] + [count] - 1 > 0x7fffffff
+   */
+  static Enumerable<dynamic> range(int start, int count) {
+    return new _RangeIterator<dynamic>(start, count);
+  }
+
+  /**
+   * Returns the sequence that consists from specified number of elements.
+   *
+   * Parameters:
+   *  [TElement] element
+   *  Element of sequence.
+   *
+   *  [int] count
+   *  Number of elements.
+   *
+   *  [ArgumentError]
+   *  [count] is [:null:]
+   *   OR
+   *  [count] < 0
+   */
+  static Enumerable<dynamic> repeat(dynamic element, int count) {
+    return new _RepeatIterator<dynamic>(element, count);
   }
 }

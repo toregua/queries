@@ -4,7 +4,7 @@ class _Iterable<E> extends IterableBase<E> {
   Iterator<E> _iterator;
 
   _Iterable(Iterator<E> iterator) {
-    if(iterator == null) {
+    if (iterator == null) {
       throw new ArgumentError("iterator: $iterator");
     }
 
