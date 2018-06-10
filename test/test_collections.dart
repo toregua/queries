@@ -18,7 +18,7 @@ void testDictionary() {
   var dictionary = new Dictionary<int, List<int>>.fromMap(map);
   var query = dictionary.groupBy((kv) => kv.key).select((g) => {g.key : g.sum((e) => new Collection(e.value).sum((e) => e))});
   var list = query.toList();
-  var expected = [{0: 0}, {1: 10}, {2: 60}];
+  List<Object> expected = [{0: 0}, {1: 10}, {2: 60}];
   expect(list, expected, reason : "Dictionary");
   //
   query = dictionary.groupBy((kv) => kv.key).select((g) => [g.key]..addAll(g.select((e) => e.value).asIterable()));
@@ -27,8 +27,8 @@ void testDictionary() {
   expect(list, expected, reason : "Dictionary");
   //
   var values = dictionary.values.selectMany((v) => new Collection(v));
-  query = values.orderBy((v) => v);
-  list = query.toList();
+  IOrderedEnumerable queryOrdered = values.orderBy((v) => v);
+  list = queryOrdered.toList();
   expected = [0, 0, 0, 10, 10, 20, 30];
 
   var keys = dictionary.keys;

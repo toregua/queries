@@ -206,9 +206,9 @@ abstract class _ReadOnlyDictionary<TKey, TValue> implements ICollection<KeyValue
     throw new UnsupportedError("removeKey()");
   }
 
-  Map<TKey, TValue> toMap() {
+  LinkedHashMap<TKey, TValue> toMap() {
     var map = new LinkedHashMap(equals: _dictionary.comparer.equals, hashCode: _dictionary.comparer.getHashCode);
-    for (var kvp in this) {
+    for (var kvp in this.asIterable()) {
       map[kvp.key] = kvp.value;
     }
 

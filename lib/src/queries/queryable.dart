@@ -499,7 +499,7 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    *  [selector] is [:null:].
    *
    */
-  IQueryable<dynamic> selectMany(IQueryable<dynamic> selector(TSource element));
+  IQueryable<dynamic> selectMany(IEnumerable<dynamic> selector(TSource element));
 
   /**
    * Compares the elements of the current sequence and the other sequence, and

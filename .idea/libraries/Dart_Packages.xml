@@ -1,0 +1,84 @@
+<component name="libraryTable">
+  <library name="Dart Packages" type="DartPackagesLibraryType">
+    <properties>
+      <option name="packageNameToDirsMap">
+        <entry key="args">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/args-1.4.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="build_tools">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/build_tools-0.0.15/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="file_utils">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/file_utils-0.0.23/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="globbing">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/globbing-0.1.20/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="logging">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/logging-0.11.3+1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/path-1.6.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="patsubst">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/patsubst-0.0.9/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="stack_trace">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/stack_trace-1.9.2/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="unittest">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/unittest-0.11.7/lib" />
+            </list>
+          </value>
+        </entry>
+      </option>
+    </properties>
+    <CLASSES>
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/args-1.4.3/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/build_tools-0.0.15/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/file_utils-0.0.23/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/globbing-0.1.20/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/logging-0.11.3+1/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/path-1.6.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/patsubst-0.0.9/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/stack_trace-1.9.2/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/unittest-0.11.7/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

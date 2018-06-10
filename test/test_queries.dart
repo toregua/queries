@@ -48,8 +48,8 @@ void main() {
 }
 
 void testAggregate() {
-  var source1 = [1, 0, 0, 0, 0];
-  var expected = 16;
+  List<num> source1 = [1, 0, 0, 0, 0];
+  num expected = 16;
   var result = new Collection(source1).aggregate((r, e) => r + r);
   expect(result, expected, reason: "aggregate()");
   //
@@ -58,20 +58,21 @@ void testAggregate() {
   result = new Collection(source1).aggregate((r, e) => r + e);
   expect(result, expected, reason: "aggregate()");
   //
-  source1 = ["a", "b", "c", "d"];
-  expected = "a, b, c, d";
-  result = new Collection(source1).aggregate((r, e) => "$r, $e");
-  expect(result, expected, reason: "aggregate()");
+
+  List<String> source2 =  ["a", "b", "c", "d"];
+  String expected2 = "a, b, c, d";
+  var result2 = new Collection(source2).aggregate((r, e) => "$r, $e");
+  expect(result2, expected2, reason: "aggregate()");
   //
-  source1 = [10, 20, 30, 40];
-  expected = 1200000;
-  result = new Collection(source1).aggregate((r, e) => r * e, 5);
-  expect(result, expected, reason: "aggregate()");
+  List<num> source3 = [10, 20, 30, 40];
+  num expected3 = 1200000;
+  var result3 = new Collection(source3).aggregate((r, e) => r * e, 5);
+  expect(result3, expected3, reason: "aggregate()");
   //
-  source1 = [];
-  expected = 41;
-  result = new Collection(source1).aggregate((r, e) => r + e, 41);
-  expect(result, expected, reason: "aggregate()");
+  var source4 = [];
+  var expected4 = 41;
+  var result4 = new Collection(source4).aggregate((r, e) => r + e, 41);
+  expect(result4, expected4, reason: "aggregate()");
 }
 
 void testAll() {
@@ -302,7 +303,7 @@ void testGroupBy() {
   var result = {};
   for(var group in list) {
     result[group.key] = [];
-    for(Child child in group) {
+    for(Child child in group.asIterable()) {
       result[group.key].add(child);
     }
   }
@@ -659,7 +660,7 @@ void testToLookup() {
   var result = {};
   for(var group in list) {
     result[group.key] = [];
-    for(Child child in group) {
+    for(Child child in group.asIterable()) {
       result[group.key].add(child);
     }
   }
@@ -675,7 +676,7 @@ void testToMap() {
   var result = {};
   for(var group in list) {
     result[group.key] = [];
-    for(Child child in group) {
+    for(Child child in group.asIterable()) {
       result[group.key].add(child);
     }
   }

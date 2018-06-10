@@ -21,7 +21,7 @@ class Dictionary<TKey, TValue> extends _Dictionary<TKey, TValue> with Enumerable
 
     _comparer = comparer;
     _source = new LinkedHashMap(equals: comparer.equals, hashCode: comparer.getHashCode);
-    for (var kvp in dictionary) {
+    for (var kvp in dictionary.asIterable()) {
       _source[kvp.key] = kvp.value;
     }
   }
@@ -288,7 +288,7 @@ abstract class _Dictionary<TKey, TValue> implements ICollection<KeyValuePair<TKe
     return false;
   }
 
-  Map<TKey, TValue> toMap() {
+  LinkedHashMap<TKey, TValue> toMap() {
     var map = new LinkedHashMap(equals: _comparer.equals, hashCode: _comparer.getHashCode);
     map.addAll(_source);
     return map;

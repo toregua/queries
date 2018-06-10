@@ -156,7 +156,7 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
 
       while (iterator.moveNext()) {
         count++;
-        sum += iterator.current;
+        sum += (iterator.current as num);
       }
     } else {
       if (!iterator.moveNext()) {
@@ -1013,7 +1013,7 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
       }
 
       while (iterator.moveNext()) {
-        sum += iterator.current;
+        sum += (iterator.current as num);
       }
     } else {
       if (!iterator.moveNext()) {
@@ -1101,7 +1101,7 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     }
 
     var dictionary = new Dictionary<dynamic, dynamic>(comparer);
-    for (var grouping in groupBy(keySelector, elementSelector, comparer)) {
+    for (var grouping in groupBy(keySelector, elementSelector, comparer).asIterable()) {
       dictionary[grouping.key] = grouping.lastOrDefault();
     }
 
@@ -1163,7 +1163,7 @@ abstract class Enumerable<TSource> implements IEnumerable<TSource> {
     }
 
     var dictionary = new Dictionary<dynamic, IGrouping<dynamic, dynamic>>(comparer);
-    for (var grouping in groupBy(keySelector, elementSelector, comparer)) {
+    for (var grouping in groupBy(keySelector, elementSelector, comparer).asIterable()) {
       dictionary[grouping.key] = grouping;
     }
 

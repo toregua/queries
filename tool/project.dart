@@ -135,11 +135,11 @@ List<String> getClasses(Uri uri) {
 List<String> getMethods(Uri uri, String className) {
   var result = <String>[];
   var library = currentMirrorSystem().libraries.values.where((l) => l.uri == uri).first;
-  var clazz = library.declarations[MirrorSystem.getSymbol(className)];
-  for (var declarartion in clazz.declarations.values) {
-    if (declarartion is MethodMirror) {
-      if (!declarartion.isPrivate && declarartion.isRegularMethod) {
-        result.add(MirrorSystem.getName(declarartion.simpleName));
+  ClassMirror clazz = library.declarations[MirrorSystem.getSymbol(className)];
+  for (var declaration in clazz.declarations.values) {
+    if (declaration is MethodMirror) {
+      if (!declaration.isPrivate && declaration.isRegularMethod) {
+        result.add(MirrorSystem.getName(declaration.simpleName));
       }
     }
   }
@@ -191,7 +191,7 @@ String incrementVersion(String version) {
     return version;
   }
 
-  parts[2] = ++patch;
+  parts[2] = (++patch).toString();
   parts.length = 3;
   return parts.join(".");
 }

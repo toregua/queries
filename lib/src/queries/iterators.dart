@@ -11,7 +11,7 @@ class _CastIterator<TResult> extends Object with Enumerable<TResult> {
     _source = source;
   }
 
-  Iterator<dynamic> get iterator {
+  Iterator<TResult> get iterator {
     return _getIterator();
   }
 
@@ -244,7 +244,7 @@ class _EmptyIterator<TSource> extends Object with Enumerable<TSource> {
 
 class _EnumerableIterator<TSource> extends Object with Enumerable<TSource> {
   // HasIterator<TSource> _source;
-  dynamic _source;
+  HasIterator<TSource> _source;
 
   // EnumerableIterator(HasIterator<TSource> source) {
   _EnumerableIterator(dynamic source) {
@@ -790,7 +790,7 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
 
   Function _keySelector;
 
-  HasIterator<TSource> _source;
+  _OrderByIterator<TSource, TKey> _source;
 
   _OrderByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) {
     if (source == null) {
@@ -902,7 +902,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
         switch (iterator.state) {
           case 1:
             if (count-- > 0) {
-              iterator.result++;
+              iterator.result = ((iterator.result as int) + 1) as TSource;
               return true;
             }
 
@@ -911,7 +911,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
           case 0:
             count = _count;
             if (count-- > 0) {
-              iterator.result = _start;
+              iterator.result = _start as TSource;
               iterator.state = 1;
               return true;
             }
@@ -1331,7 +1331,7 @@ class _TakeWhileIterator<TSource> extends Object with Enumerable<TSource> {
 }
 
 class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
-  _OrderByIterator<TSource, dynamic> _source;
+  _OrderByIterator<TSource, TKey> _source;
 
   _ThenByIterator(_OrderByIterator<TSource, dynamic> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) : super(source, keySelector, descending, comparer);
 
