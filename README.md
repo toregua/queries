@@ -81,22 +81,3 @@ toLookup
 union  
 where
 ```
-
-**Other classes**
-
-```
-Enumerable  
-IGrouping  
-ILookup  
-IOrderedEnumerable  
-IOrderedQueryable  
-IQueryable  
-Lookup  
-Queryable
-```
-
-**Other methods**
-
-```
-thenBy
-```

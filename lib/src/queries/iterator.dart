@@ -3,7 +3,7 @@ part of queries;
 class _Iterator<TElement> implements Iterator<TElement> {
   Function action;
 
-  TElement result;
+  dynamic result;
 
   int state = 0;
 

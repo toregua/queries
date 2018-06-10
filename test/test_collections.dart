@@ -27,7 +27,7 @@ void testDictionary() {
   expect(list, expected, reason : "Dictionary");
   //
   var values = dictionary.values.selectMany((v) => new Collection(v));
-  IOrderedEnumerable queryOrdered = values.orderBy((v) => v);
+  var queryOrdered = values.orderBy((v) => v);
   list = queryOrdered.toList();
   expected = [0, 0, 0, 10, 10, 20, 30];
 

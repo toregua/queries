@@ -5,7 +5,7 @@ abstract class IGrouping<TKey, TElement> implements IEnumerable<TElement> {
 }
 
 class _Grouping<TKey, TElement> extends _EnumerableIterator<TElement> implements IGrouping<TKey, TElement> {
-  HasIterator<TElement> _source;
+  dynamic _source;
 
   TKey _key;
 

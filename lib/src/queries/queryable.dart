@@ -500,7 +500,6 @@ abstract class IQueryable<TSource> implements IEnumerable<TSource> {
    *
    */
   IQueryable<dynamic> selectMany(IEnumerable<dynamic> selector(TSource element));
-
   /**
    * Compares the elements of the current sequence and the other sequence, and
    * returns [:true:] if all elements equal; otherwise, [:false:].

@@ -42,8 +42,6 @@ void main(List<String> args) {
     template = template.replaceFirst("{{CLASSES}}", classes.join("  \n"));
     var methods = getMethods(Uri.parse("package:queries/queries.dart"), "Enumerable");
     template = template.replaceFirst("{{METHODS}}", methods.join("  \n"));
-    classes = getClasses(Uri.parse("package:queries/queries.dart"));
-    template = template.replaceFirst("{{OTHER_CLASSES}}", classes.join("  \n"));
     new File(t.name).writeAsStringSync(template);
   });
 
@@ -136,10 +134,10 @@ List<String> getMethods(Uri uri, String className) {
   var result = <String>[];
   var library = currentMirrorSystem().libraries.values.where((l) => l.uri == uri).first;
   ClassMirror clazz = library.declarations[MirrorSystem.getSymbol(className)];
-  for (var declaration in clazz.declarations.values) {
-    if (declaration is MethodMirror) {
-      if (!declaration.isPrivate && declaration.isRegularMethod) {
-        result.add(MirrorSystem.getName(declaration.simpleName));
+  for (var declarartion in clazz.declarations.values) {
+    if (declarartion is MethodMirror) {
+      if (!declarartion.isPrivate && declarartion.isRegularMethod) {
+        result.add(MirrorSystem.getName(declarartion.simpleName));
       }
     }
   }
@@ -186,7 +184,7 @@ String incrementVersion(String version) {
     return version;
   }
 
-  var patch = int.parse(parts[2], onError: (x) => null);
+  num patch = int.parse(parts[2], onError: (x) => null);
   if (patch == null) {
     return version;
   }

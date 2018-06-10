@@ -1,6 +1,6 @@
 part of queries;
 
-class _CastIterator<TResult> extends Object with Enumerable<TResult> {
+class _CastIterator<TResult> extends Object with Enumerable<dynamic> {
   HasIterator<dynamic> _source;
 
   _CastIterator(HasIterator<dynamic> source) {
@@ -11,7 +11,7 @@ class _CastIterator<TResult> extends Object with Enumerable<TResult> {
     _source = source;
   }
 
-  Iterator<TResult> get iterator {
+  Iterator<dynamic> get iterator {
     return _getIterator();
   }
 
@@ -244,7 +244,7 @@ class _EmptyIterator<TSource> extends Object with Enumerable<TSource> {
 
 class _EnumerableIterator<TSource> extends Object with Enumerable<TSource> {
   // HasIterator<TSource> _source;
-  HasIterator<TSource> _source;
+  dynamic _source;
 
   // EnumerableIterator(HasIterator<TSource> source) {
   _EnumerableIterator(dynamic source) {
@@ -790,7 +790,7 @@ class _OrderByIterator<TSource, TKey> extends _OrderedEnumerable<TSource> {
 
   Function _keySelector;
 
-  _OrderByIterator<TSource, TKey> _source;
+  HasIterator<TSource> _source;
 
   _OrderByIterator(HasIterator<TSource> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) {
     if (source == null) {
@@ -902,7 +902,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
         switch (iterator.state) {
           case 1:
             if (count-- > 0) {
-              iterator.result = ((iterator.result as int) + 1) as TSource;
+              iterator.result++;
               return true;
             }
 
@@ -911,7 +911,7 @@ class _RangeIterator<TSource> extends Object with Enumerable<TSource> {
           case 0:
             count = _count;
             if (count-- > 0) {
-              iterator.result = _start as TSource;
+              iterator.result = _start;
               iterator.state = 1;
               return true;
             }
@@ -1331,7 +1331,8 @@ class _TakeWhileIterator<TSource> extends Object with Enumerable<TSource> {
 }
 
 class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
-  _OrderByIterator<TSource, TKey> _source;
+//  _OrderByIterator<TSource, dynamic> _source;
+  HasIterator<TSource> _source;
 
   _ThenByIterator(_OrderByIterator<TSource, dynamic> source, TKey keySelector(TSource element), bool descending, [Comparator<TKey> comparer]) : super(source, keySelector, descending, comparer);
 
@@ -1366,13 +1367,13 @@ class _ThenByIterator<TSource, TKey> extends _OrderByIterator<TSource, TKey> {
               Comparator<TSource> prevComparer;
               TSource previous = sourceIterator.current;
               if (_descending) {
-                var sourceKeySelector = _source.keySelector;
-                var sourceComparer = _source.comparer;
+                var sourceKeySelector = (_source as _OrderByIterator<TSource, dynamic>).keySelector;
+                var sourceComparer = (_source as _OrderByIterator<TSource, dynamic>).comparer;
                 comparer = (TSource a, TSource b) => -_comparer(_keySelector(a), _keySelector(b));
                 prevComparer = (TSource a, TSource b) => -sourceComparer(sourceKeySelector(a), sourceKeySelector(b));
               } else {
-                var sourceKeySelector = _source.keySelector;
-                var sourceComparer = _source.comparer;
+                var sourceKeySelector = (_source as _OrderByIterator<TSource, dynamic>).keySelector;
+                var sourceComparer = (_source as _OrderByIterator<TSource, dynamic>).comparer;
                 comparer = (TSource a, TSource b) => _comparer(_keySelector(a), _keySelector(b));
                 prevComparer = (TSource a, TSource b) => sourceComparer(sourceKeySelector(a), sourceKeySelector(b));
               }
